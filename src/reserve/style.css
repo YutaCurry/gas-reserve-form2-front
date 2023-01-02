@@ -1,0 +1,325 @@
+/* --- 全体的な内容 */
+body {
+
+    font-family: "SF Pro JP", "SF Pro Display", "SF Pro Icons", "Hiragino Kaku Gothic Pro", "ヒラギノ角ゴ Pro W3", "メイリオ", "Meiryo", "ＭＳ Ｐゴシック", "Helvetica Neue", "Helvetica", "Arial", sans-serif;
+    font-size: 0.8rem;
+}
+
+main {
+    color: darkgreen;
+}
+
+h1 {
+    font-size: 1.5rem;
+}
+
+.reserveContainer {
+    text-align: center;
+    position: relative;
+}
+
+/* --- メッセージ */
+#msgLabel {
+    margin-bottom: 0.5rem;
+    display: block;
+}
+
+.err {
+    color: red;
+}
+
+.info {
+    color: darkblue;
+}
+
+/* --- お名前 */
+#nameLabel,
+#menuLabel {
+    padding-left: 0.5rem;
+}
+
+/* --- input, button */
+input,
+button,
+select {
+    background: darkgreen;
+    border: 0.1rem solid darkgreen;
+    border-radius: 1rem 1rem 1rem 1rem;
+    color: white;
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+    height: 1.3rem;
+}
+
+select {
+    font-size: 1.1rem;
+}
+
+button {
+    width: 10rem;
+    height: 2rem;
+    font-size: 1.3rem;
+}
+
+button:active {
+    background: mediumaquamarine;
+    color: inherit;
+}
+
+input:focus {
+    background: mediumaquamarine;
+    color: inherit;
+}
+
+select {
+    height: 1.8rem;
+}
+
+/* --- ページング */
+#pageLinkSection {
+    display: inline-block;
+    font-size: 1.1rem;
+}
+
+#pageLinkSection a {
+    margin-left: 0.5rem;
+    margin-right: 0.5rem;
+}
+
+#pageLinkSection .foucus {
+    text-decoration: underline;
+}
+
+/* --- スケジール */
+.time,
+.date,
+.data,
+.reserveDataCheck+label::before {
+    border-radius: 0.15rem 0.15rem 0.15rem 0.15rem;
+}
+
+/* コンテナ */
+.reserveDate {
+    display: grid;
+    grid-template-rows: auto;
+    grid-template-columns: 4rem 50rem;
+}
+
+.matrixDateHeader {
+    grid-column: 1 / 2;
+    grid-row: 1 / 2;
+
+    /* child */
+    display: grid;
+    grid-template-rows: 3.3rem repeat(auto-fill, 1.5rem);
+    grid-column-gap: 0.1rem;
+    grid-row-gap: 0.1rem;
+    background: white;
+    z-index: 10;
+}
+
+.matrixTimeDataHeaderScroll {
+    overflow-y: none;
+    overflow-x: auto;
+    grid-column: 2 / 3;
+    grid-row: 1 / 2;
+    width: 60rem;
+}
+
+.matrixTimeDataHeader {
+    display: grid;
+    grid-template-rows: 2.5rem repeat(auto-fill, 1.5rem);
+    grid-template-columns: repeat(auto-fill, 4rem);
+    grid-column-gap: 0.1rem;
+    grid-row-gap: 0.1rem;
+    min-width: 200rem;
+}
+
+.matrixSpace {
+    grid-row: 1 / 2;
+    background: white;
+    height: 5rem;
+    margin-top: -1rem;
+}
+
+/* データ */
+.data {
+    width: 3.9rem;
+    margin-left: 1.2rem;
+}
+
+/* 空データ */
+.data.empty {
+    background: silver;
+}
+
+/* 休日の日付 */
+.date.holiday,
+.data.holiday .reserveDataCheck+label::before {
+    background: lightpink;
+}
+
+/* .data.holiday .reserveDataCheck:hover+label::before {
+    background: hotpink;
+  } */
+
+.data.holiday .reserveDataCheck:checked+label::before {
+    background: deeppink;
+}
+
+/* データのチェック部分 */
+.reserveDataCheck {
+    display: none;
+}
+
+.reserveDataCheck+label::before,
+.reserveDataCheck:hover+label::before,
+.reserveDataCheck:checked+label::before,
+.data.empty {
+    content: "";
+    display: block;
+    height: 1.5rem;
+}
+
+#require {
+    margin-left: 5rem;
+}
+
+#btnSection {
+
+    margin-top: 0.5rem;
+    margin-bottom: 2.5rem;
+}
+
+.date {
+    width: 5rem;
+}
+
+.time {
+    margin-left: 1.2rem;
+    width: 3.8rem;
+}
+
+.time,
+.date {
+    padding-left: 0.1rem;
+    text-align: center;
+}
+
+.time,
+.date,
+.reserveDataCheck+label::before {
+    background: mediumaquamarine;
+}
+
+/* .reserveDataCheck:hover+label::before {
+    background: darkgreen;
+  } */
+.reserveDataCheck:checked+label::before {
+    background: seagreen;
+}
+
+/** --- 選択クリア */
+#selectClear {
+    margin-left: 0.5rem;
+}
+
+/** --- ローディング部分 */
+.reserveContainer .loaderContainer {
+    position: absolute;
+    text-align: center;
+    background: white;
+    width: 100%;
+    top: -0.1rem;
+    left: 0rem;
+    height: 100rem;
+    z-index: 11;
+}
+
+.loader {
+    /* color: #ffffff; */
+    color: #000000 font-size: 20px;
+    margin: 100px auto;
+    width: 1em;
+    height: 1em;
+    border-radius: 50%;
+    position: relative;
+    text-indent: -9999em;
+    -webkit-animation: load4 1.3s infinite linear;
+    animation: load4 1.3s infinite linear;
+    -webkit-transform: translateZ(0);
+    -ms-transform: translateZ(0);
+    transform: translateZ(0);
+}
+
+@-webkit-keyframes load4 {
+
+    0%,
+    100% {
+        box-shadow: 0 -3em 0 0.2em, 2em -2em 0 0em, 3em 0 0 -1em, 2em 2em 0 -1em, 0 3em 0 -1em, -2em 2em 0 -1em, -3em 0 0 -1em, -2em -2em 0 0;
+    }
+
+    12.5% {
+        box-shadow: 0 -3em 0 0, 2em -2em 0 0.2em, 3em 0 0 0, 2em 2em 0 -1em, 0 3em 0 -1em, -2em 2em 0 -1em, -3em 0 0 -1em, -2em -2em 0 -1em;
+    }
+
+    25% {
+        box-shadow: 0 -3em 0 -0.5em, 2em -2em 0 0, 3em 0 0 0.2em, 2em 2em 0 0, 0 3em 0 -1em, -2em 2em 0 -1em, -3em 0 0 -1em, -2em -2em 0 -1em;
+    }
+
+    37.5% {
+        box-shadow: 0 -3em 0 -1em, 2em -2em 0 -1em, 3em 0em 0 0, 2em 2em 0 0.2em, 0 3em 0 0em, -2em 2em 0 -1em, -3em 0em 0 -1em, -2em -2em 0 -1em;
+    }
+
+    50% {
+        box-shadow: 0 -3em 0 -1em, 2em -2em 0 -1em, 3em 0 0 -1em, 2em 2em 0 0em, 0 3em 0 0.2em, -2em 2em 0 0, -3em 0em 0 -1em, -2em -2em 0 -1em;
+    }
+
+    62.5% {
+        box-shadow: 0 -3em 0 -1em, 2em -2em 0 -1em, 3em 0 0 -1em, 2em 2em 0 -1em, 0 3em 0 0, -2em 2em 0 0.2em, -3em 0 0 0, -2em -2em 0 -1em;
+    }
+
+    75% {
+        box-shadow: 0em -3em 0 -1em, 2em -2em 0 -1em, 3em 0em 0 -1em, 2em 2em 0 -1em, 0 3em 0 -1em, -2em 2em 0 0, -3em 0em 0 0.2em, -2em -2em 0 0;
+    }
+
+    87.5% {
+        box-shadow: 0em -3em 0 0, 2em -2em 0 -1em, 3em 0 0 -1em, 2em 2em 0 -1em, 0 3em 0 -1em, -2em 2em 0 0, -3em 0em 0 0, -2em -2em 0 0.2em;
+    }
+}
+
+@keyframes load4 {
+
+    0%,
+    100% {
+        box-shadow: 0 -3em 0 0.2em, 2em -2em 0 0em, 3em 0 0 -1em, 2em 2em 0 -1em, 0 3em 0 -1em, -2em 2em 0 -1em, -3em 0 0 -1em, -2em -2em 0 0;
+    }
+
+    12.5% {
+        box-shadow: 0 -3em 0 0, 2em -2em 0 0.2em, 3em 0 0 0, 2em 2em 0 -1em, 0 3em 0 -1em, -2em 2em 0 -1em, -3em 0 0 -1em, -2em -2em 0 -1em;
+    }
+
+    25% {
+        box-shadow: 0 -3em 0 -0.5em, 2em -2em 0 0, 3em 0 0 0.2em, 2em 2em 0 0, 0 3em 0 -1em, -2em 2em 0 -1em, -3em 0 0 -1em, -2em -2em 0 -1em;
+    }
+
+    37.5% {
+        box-shadow: 0 -3em 0 -1em, 2em -2em 0 -1em, 3em 0em 0 0, 2em 2em 0 0.2em, 0 3em 0 0em, -2em 2em 0 -1em, -3em 0em 0 -1em, -2em -2em 0 -1em;
+    }
+
+    50% {
+        box-shadow: 0 -3em 0 -1em, 2em -2em 0 -1em, 3em 0 0 -1em, 2em 2em 0 0em, 0 3em 0 0.2em, -2em 2em 0 0, -3em 0em 0 -1em, -2em -2em 0 -1em;
+    }
+
+    62.5% {
+        box-shadow: 0 -3em 0 -1em, 2em -2em 0 -1em, 3em 0 0 -1em, 2em 2em 0 -1em, 0 3em 0 0, -2em 2em 0 0.2em, -3em 0 0 0, -2em -2em 0 -1em;
+    }
+
+    75% {
+        box-shadow: 0em -3em 0 -1em, 2em -2em 0 -1em, 3em 0em 0 -1em, 2em 2em 0 -1em, 0 3em 0 -1em, -2em 2em 0 0, -3em 0em 0 0.2em, -2em -2em 0 0;
+    }
+
+    87.5% {
+        box-shadow: 0em -3em 0 0, 2em -2em 0 -1em, 3em 0 0 -1em, 2em 2em 0 -1em, 0 3em 0 -1em, -2em 2em 0 0, -3em 0em 0 0, -2em -2em 0 0.2em;
+    }
+}

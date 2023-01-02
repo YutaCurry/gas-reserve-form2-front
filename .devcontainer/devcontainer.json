@@ -1,0 +1,20 @@
+{
+	"name": "node-typescript",
+	// Dockerfileでイメージ・コンテナを作成
+	"dockerComposeFile": [
+		"../docker-compose.yml"
+	],
+	"service": "workspace",
+	"workspaceFolder": "/workspace",
+	// リモート先のVS Codeにインストールする拡張機能
+	"extensions": [
+		// 標準ツール
+		"mhutchie.git-graph",
+		// typescript
+		"dbaeumer.vscode-eslint",
+		// jest
+		"orta.vscode-jest",
+		"firsttris.vscode-jest-runner",
+		"rome.rome"
+	]
+}

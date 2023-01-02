@@ -1,0 +1,9 @@
+version: "3"
+
+services:
+    workspace:
+        image: node:18.5.0
+        working_dir: /workspace
+        command: sleep infinity
+        volumes:
+            - ./:/workspace
