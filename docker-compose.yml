@@ -5,5 +5,9 @@ services:
         image: node:18.5.0
         working_dir: /workspace
         command: sleep infinity
+        environment:
+            REACT_APP_CREATE_CAL_URL: ""
+            REACT_APP_GET_RESERVE_MATRIX_URL: ""
+            
         volumes:
             - ./:/workspace
