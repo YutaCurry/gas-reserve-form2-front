@@ -3,6 +3,9 @@
 import { useRef, useState } from 'react'
 import { createCalEvents, CreateCalEventsProps, ReserveTime } from './api'
 import { onCreateCalendarEvent, showMessage, useReserveMatrix } from './hooks'
+import { Menu, ReserveMatrix, PageLink } from './components'
+const RESERVE_MATRIX_DATE_LIMIT = 30
+
 
 export function Reserve() {
 	const [axisDate, setAxisDate] = useState(new Date())
@@ -10,6 +13,22 @@ export function Reserve() {
 
 	const [isPostLoading, setPostLoading] = useState(false)
 	const menuRef = useRef<HTMLSelectElement>(null)
+
+    const {reserveMatrix} = currCalendars!
+    const pageNum = Math.floor(
+		reserveMatrix.dateAxis.length / RESERVE_MATRIX_DATE_LIMIT,
+	)
+
+    /**
+     * 選択クリアイベント処理。
+     */
+    function onSelectClearClickListener (
+		e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
+	) {
+        Array.from(document.getElementsByClassName('reserveDataCheck')).forEach(
+            (e2) => (e2.checked = false),
+        )
+    }
 
 	/**
 	 * 予約ボタンクリックイベント処理。
@@ -22,12 +41,6 @@ export function Reserve() {
 		// --- 予約時間チェック(HOUR)
 		// セルの時間単位
 		const timeUnitOfCell = currCalendars!.periodMiniutes
-		// const menuNode = document.getElementById('menu')
-
-		// メニュー取得
-		// const menuItem = currCalendars!.menuItems.find(
-		// 	(e) => e.id === menuNode.value,
-		// )
 		const menuItem = currCalendars!.menuItems.find(
 			(e) => e.id === menuRef.current!.value,
 		)
@@ -38,7 +51,6 @@ export function Reserve() {
 		}
 
 		const requireCells = menuItem.miniutes / timeUnitOfCell
-		// const menuName = menuNode!.selectedOptions[0].text
 		const menuName = menuRef.current!.selectedOptions[0].text
 
 		// 予約時間
@@ -161,37 +173,46 @@ export function Reserve() {
 				<h1>カット予約フォーム</h1>
 				<span id="msgLabel" />
 			</section>
-			<section id="require">
-				<label htmlFor="email">メールアドレス</label>
-				<input id="email" type="email" />
-				<label id="nameLabel" htmlFor="name">
-					お名前
-				</label>
-				<input id="name" type="text" />
-				<label id="menuLabel" htmlFor="menu">
-					メニュー
-				</label>
-				<select id="menu" ref={menuRef} />
-				<section id="pageLinkSection" />
-			</section>
-			<section className="reserveContainer">
-				<article id="reserveMatrix" />
-				<section id="btnSection">
-					<button id="send" onClick={onSendClickListener}>
-						予約
-					</button>
-					<button id="selectClear">選択クリア</button>
-				</section>
-				{(isPostLoading || isLoading) && (
-					<section className="loaderContainer">
-						<div className="loader">Loading...</div>
-						<span>お待ちください。</span>
-					</section>
-				)}
-			</section>
-			<section className="maintenance">
-				<span>メンテナンス中です。</span>
-			</section>
+			{currCalendars!.maintenceFlag ?
+            <>
+                <section id="require">
+                    <label htmlFor="email">メールアドレス</label>
+                    <input id="email" type="email" />
+                    <label id="nameLabel" htmlFor="name">
+                        お名前
+                    </label>
+                    <input id="name" type="text" />
+                    <label id="menuLabel" htmlFor="menu">
+                        メニュー
+                    </label>
+                    <Menu ref={menuRef} currCalendars={currCalendars!} />
+                    <PageLink currCalendars={currCalendars!} />
+                </section>
+                <section className="reserveContainer">
+                    <article id="reserveMatrix">
+                        {[...Array(pageNum).keys()].map((e, i) => {
+        return <ReserveMatrix currCalendars={currCalendars!} pageLinkNum={i} startDateOffsetIndex={i * RESERVE_MATRIX_DATE_LIMIT}
+        endDateOffsetIndexExclusive={(i + 1) * RESERVE_MATRIX_DATE_LIMIT} />
+	})}
+                    </article>
+                    <section id="btnSection">
+                        <button id="send" onClick={onSendClickListener}>
+                            予約
+                        </button>
+                        <button id="selectClear" onClick={onSelectClearClickListener}>選択クリア</button>
+                    </section>
+                    {(isPostLoading || isLoading) && (
+                        <section className="loaderContainer">
+                            <div className="loader">Loading...</div>
+                            <span>お待ちください。</span>
+                        </section>
+                    )}
+                </section>
+            </> : 
+            <section className="maintenance">
+                <span>メンテナンス中です。</span>
+            </section>
+            }
 		</main>
 	)
 }
