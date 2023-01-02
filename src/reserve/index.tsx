@@ -1,7 +1,7 @@
 // import style from './style.css'
 
 import { useRef, useState } from 'react'
-import { createCalEvents, CreateCalEventsProps, ReserveTimes } from './api'
+import { createCalEvents, CreateCalEventsProps, ReserveTime } from './api'
 import { onCreateCalendarEvent, showMessage, useReserveMatrix } from './hooks'
 
 export function Reserve() {
@@ -28,7 +28,9 @@ export function Reserve() {
 		// const menuItem = currCalendars!.menuItems.find(
 		// 	(e) => e.id === menuNode.value,
 		// )
-		const menuItem = menuRef.current
+		const menuItem = currCalendars!.menuItems.find(
+			(e) => e.id === menuRef.current!.value,
+		)
 		if (!menuItem) {
 			showMessage('予約できませんでした。選択されたメニューがありません。')
 			setPostLoading(false)
@@ -37,9 +39,10 @@ export function Reserve() {
 
 		const requireCells = menuItem.miniutes / timeUnitOfCell
 		// const menuName = menuNode!.selectedOptions[0].text
-		const menuName = menuRef.current.selectedOptions[0].text
+		const menuName = menuRef.current!.selectedOptions[0].text
 
 		// 予約時間
+		const dataClassName = 'reserveData'
 		const dataTags = Array.from(
 			document.getElementsByClassName(`${dataClassName}Check`),
 		)
@@ -56,7 +59,7 @@ export function Reserve() {
 		const dateAxisIndexes = new Set(dataChecks.map((e) => e.dateAxisIndex))
 		if (dateAxisIndexes.size > 1) {
 			showMessage('予約できませんでした。予約は同じ日でなければなりません。')
-			document.getElementsByClassName('loaderContainer')[0].hidden = true
+			setPostLoading(false)
 			return
 		}
 
@@ -65,7 +68,7 @@ export function Reserve() {
 			showMessage(
 				`予約できませんでした。"${menuName}"の予約は${requireCells}枠分を選択してください。`,
 			)
-			document.getElementsByClassName('loaderContainer')[0].hidden = true
+			setPostLoading(false)
 			return
 		}
 
@@ -99,12 +102,12 @@ export function Reserve() {
 			showMessage(
 				'予約できませんでした。予約は連続した時間でなければなりません。',
 			)
-			document.getElementsByClassName('loaderContainer')[0].hidden = true
+			setPostLoading(false)
 			return
 		}
 
 		// 予約時間変換
-		const reserveTimes: ReserveTimes = [
+		const reserveTimes: ReserveTime[] = [
 			{
 				startTime: currCalendars!.reserveMatrix.timeAxis[timeAxisIndexes[0]][0],
 				endTime:
@@ -126,13 +129,13 @@ export function Reserve() {
 
 		if (body.email === '') {
 			showMessage('予約できませんでした。メールアドレスを入力してください。')
-			document.getElementsByClassName('loaderContainer')[0].hidden = true
+			setPostLoading(false)
 			return
 		}
 
 		if (body.name === '') {
 			showMessage('予約できませんでした。お名前を入力してください。')
-			document.getElementsByClassName('loaderContainer')[0].hidden = true
+			setPostLoading(false)
 			return
 		}
 

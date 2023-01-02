@@ -16,14 +16,12 @@ export async function getReserveMatrix(axisDate: Date = new Date()) {
 export interface ReserveTime {
 	startTime: string
 	endTime: string
-	date: number
+	date: string
 }
-export type ReserveTimes = ReserveTimes[]
-
 export interface CreateCalEventsProps {
 	email: string
 	name: string
-	reserveTimes: ReserveTimes
+	reserveTimes: ReserveTime[]
 	menu: string
 }
 export async function createCalEvents(
