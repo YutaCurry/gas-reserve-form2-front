@@ -15,7 +15,7 @@ export interface DetailValue {
 }
 export type DateDetail = Record<string, DetailValue>
 
-export interface ReserveMatrix {
+export interface ReserveMatrixData {
 	reserveMatrix: {
 		dateAxis: string[]
 		timeAxis: string[][]
@@ -31,7 +31,7 @@ export interface ReserveMatrix {
 	maintenceFlag: boolean
 }
 
-const reserveMatrixObj: ReserveMatrix = {
+const reserveMatrixObj: ReserveMatrixData = {
 	reserveMatrix: {
 		dateAxis: [],
 		timeAxis: [],
@@ -44,7 +44,7 @@ const reserveMatrixObj: ReserveMatrix = {
 }
 
 // rome-ignore lint/suspicious/noExplicitAny: <explanation>
-export function isReserveMatrix(data: any): data is ReserveMatrix {
+export function isReserveMatrix(data: any): data is ReserveMatrixData {
 	const properties = Object.keys(reserveMatrixObj)
 	return properties.every((e) => e in data)
 }

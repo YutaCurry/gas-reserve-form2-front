@@ -1,12 +1,17 @@
 import { ReserveMatrixData } from '../types'
 
 export interface PageLinkProps {
-	currCalendars: ReserveMatrixData
+	currCalendars: ReserveMatrixData | null
 }
 
 const RESERVE_MATRIX_DATE_LIMIT = 30
 
-export function PageLink({ currCalendars: { reserveMatrix } }: PageLinkProps) {
+export function PageLink({ currCalendars }: PageLinkProps) {
+	if (!currCalendars) {
+		return <></>
+	}
+
+	const { reserveMatrix } = currCalendars
 	// TODO
 	function togglePageLinkNum(pageLinkNum: number) {
 		// // 一旦すべて非表示

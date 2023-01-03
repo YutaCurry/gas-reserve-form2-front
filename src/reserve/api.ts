@@ -3,9 +3,11 @@ import { isReserveMatrix } from './types'
 
 export async function getReserveMatrix(axisDate: Date = new Date()) {
 	try {
-		const res = await axios.get(
-			`${process.env
-				.REACT_APP_GET_RESERVE_MATRIX_URL!}?axisDateTime=${axisDate.getTime()}`,
+		const res = await axios.post(
+			process.env.REACT_APP_GET_RESERVE_MATRIX_URL!,
+			{
+				axisDateTime: axisDate.getTime(),
+			},
 		)
 		return isReserveMatrix(res.data) ? res.data : null
 	} catch (e) {
