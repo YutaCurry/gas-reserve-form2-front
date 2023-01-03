@@ -237,8 +237,7 @@ select {
 }
 
 .loader {
-    /* color: #ffffff; */
-    color: #000000 font-size: 20px;
+    font-size: 20px;
     margin: 100px auto;
     width: 1em;
     height: 1em;

@@ -5,5 +5,7 @@ services:
         image: node:18.5.0
         working_dir: /workspace
         command: sleep infinity
+        # environment:
+        #     REACT_APP_API_URL: "https://script.google.com/macros/s/AKfycbygZkUcilnf70IuLvpuDZ83tr-lwchmYlON0a5Tk1CRt75mnx2pzOqvPvWCn_DnRjG6XA/exec"            
         volumes:
             - ./:/workspace
