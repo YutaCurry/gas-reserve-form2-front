@@ -1,5 +1,5 @@
-name: tempadd-actions
-run-name: ${{ github.actor }} tempadd
+name: cicd-actions
+run-name: ${{ github.actor }} front
 on:
   workflow_dispatch:
 
