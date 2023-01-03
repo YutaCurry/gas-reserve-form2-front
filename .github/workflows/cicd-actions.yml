@@ -24,12 +24,12 @@ jobs:
         run: |
           touch .env
           echo "REACT_APP_API_URL=${{ secrets.REACT_APP_API_URL }}" >> .env
-        run:
+        run: |
           npm install
-        run:
+        run: |
           npm run build
       - name: Upload file to S3
-        env: 
+        env: | 
           S3_UPLOAD_BUCKET: ${{ secrets.S3_UPLOAD_BUCKET }}
-        run:
+        run: |
           aws s3 cp ./build/ s3://$S3_UPLOAD_BUCKET/ --quiet
