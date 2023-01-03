@@ -3,9 +3,11 @@ import { getReserveMatrix } from './api'
 import { ReserveMatrixData } from './types'
 
 export function useReserveMatrix(
-	axisDate: Date = new Date(),
+	axisDate: Date,
 ): [ReserveMatrixData | null, boolean] {
-	const [reserveMatrix, setReserveMatrix] = useState<ReserveMatrixData | null>(null)
+	const [reserveMatrix, setReserveMatrix] = useState<ReserveMatrixData | null>(
+		null,
+	)
 	const [isLoading, setLoading] = useState(false)
 
 	useEffect(() => {

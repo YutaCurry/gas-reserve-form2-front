@@ -4,9 +4,15 @@ import { isReserveMatrix } from './types'
 export async function getReserveMatrix(axisDate: Date = new Date()) {
 	try {
 		const res = await axios.post(
-			process.env.REACT_APP_GET_RESERVE_MATRIX_URL!,
+			process.env.REACT_APP_API_URL!,
 			{
+				name: 'getReserveMatrix',
 				axisDateTime: axisDate.getTime(),
+			},
+			{
+				headers: {
+					'Content-Type': 'multipart/form-data',
+				},
 			},
 		)
 		return isReserveMatrix(res.data) ? res.data : null
@@ -31,10 +37,19 @@ export async function createCalEvents(
 	body: CreateCalEventsProps,
 ) {
 	try {
-		const res = await axios.post(process.env.REACT_APP_CREATE_CAL_URL!, {
-			axisDateTime: axisDate.getTime(),
-			jsonProps: JSON.stringify(body),
-		})
+		const res = await axios.post(
+			process.env.REACT_APP_API_URL!,
+			{
+				name: 'createCalendarEvent',
+				axisDateTime: axisDate.getTime(),
+				jsonProps: JSON.stringify(body),
+			},
+			{
+				headers: {
+					'Content-Type': 'multipart/form-data',
+				},
+			},
+		)
 		return res.data as boolean
 	} catch (e) {
 		return false

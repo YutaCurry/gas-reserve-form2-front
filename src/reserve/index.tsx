@@ -10,7 +10,7 @@ const RESERVE_MATRIX_DATE_LIMIT = 30
 
 export function Reserve() {
 	const [axisDate, setAxisDate] = useState(new Date())
-	const [currCalendars, isLoading] = useReserveMatrix()
+	const [currCalendars, isLoading] = useReserveMatrix(axisDate)
 
 	const [isPostLoading, setPostLoading] = useState(false)
 	const menuRef = useRef<HTMLSelectElement>(null)
