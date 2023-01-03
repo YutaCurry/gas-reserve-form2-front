@@ -1,7 +1,9 @@
 name: cicd-actions
 run-name: ${{ github.actor }} front
 on:
-  workflow_dispatch:
+  push:
+    branches:
+      - main
 
 jobs:
   exec:
@@ -19,6 +21,9 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ap-northeast-1
       - name: App Build
+        run: |
+          touch .env
+          echo "REACT_APP_API_URL=${{ secrets.REACT_APP_API_URL }}" >> .env
         run:
           npm install
         run:
