@@ -52,6 +52,18 @@ select {
     height: 1.3rem;
 }
 
+.pageLink {
+    background: darkgreen;
+    border: 0.1rem solid darkgreen;
+    border-radius: 1rem 1rem 1rem 1rem;
+    color: white;
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+    height: 1.3rem;
+    font-size: 0.9rem;
+}
+
+
 select {
     font-size: 1.1rem;
 }
@@ -76,10 +88,16 @@ select {
     height: 1.8rem;
 }
 
+#send:disabled,
+#selectClear:disabled {
+    background-color: rgb(58, 70, 59);
+}
+
 /* --- ページング */
 #pageLinkSection {
     display: inline-block;
     font-size: 1.1rem;
+    margin-top: 0.5rem;
 }
 
 #pageLinkSection a {
@@ -90,6 +108,7 @@ select {
 #pageLinkSection .foucus {
     text-decoration: underline;
 }
+
 
 /* --- スケジール */
 .time,
@@ -116,6 +135,7 @@ select {
     grid-template-columns: 4rem 50rem;
     overflow-y: auto;
     overflow-x: none;
+    margin-top: 0;
 }
 
 .matrixDateHeader,

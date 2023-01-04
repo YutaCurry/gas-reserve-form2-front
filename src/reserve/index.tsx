@@ -259,10 +259,18 @@ export function Reserve() {
 							</PageLink>
 						</article>
 						<section id="btnSection">
-							<button id="send" onClick={onSendClickListener}>
+							<button
+								id="send"
+								onClick={onSendClickListener}
+								disabled={isLoading}
+							>
 								予約
 							</button>
-							<button id="selectClear" onClick={onSelectClearClickListener}>
+							<button
+								id="selectClear"
+								onClick={onSelectClearClickListener}
+								disabled={isLoading}
+							>
 								選択クリア
 							</button>
 						</section>
