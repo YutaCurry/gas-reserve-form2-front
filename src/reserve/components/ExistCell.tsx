@@ -39,11 +39,12 @@ export function ExistCell({
 				return false
 			})
 			if (exist) {
-				return <></>
+				return null
 			}
 
 			const el = (
 				<dd
+					key={`ExistCell_${dateAxisIndex}_${timeAxisIndex}`}
 					className="data empty"
 					style={{
 						gridColumn: `${timeAxisIndex + 1} / ${timeAxisIndex + 2}`,
@@ -51,7 +52,7 @@ export function ExistCell({
 							dateAxisIndex + 3 - startDateOffsetIndex
 						}`,
 					}}
-					data-pageLinkNum={Math.floor(
+					data-pagelinknum={Math.floor(
 						dateAxisIndex / RESERVE_MATRIX_DATE_LIMIT,
 					)}
 				/>
@@ -60,5 +61,9 @@ export function ExistCell({
 		},
 	)
 
-	return <>{cannotReserveList}</>
+	return (
+		<>
+			{cannotReserveList.filter((e): e is NonNullable<typeof e> => e != null)}
+		</>
+	)
 }

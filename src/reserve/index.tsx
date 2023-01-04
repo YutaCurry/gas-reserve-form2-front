@@ -10,10 +10,15 @@ const RESERVE_MATRIX_DATE_LIMIT = 30
 
 export function Reserve() {
 	const [axisDate, setAxisDate] = useState(new Date())
-	const [currCalendars, isLoading] = useReserveMatrix(axisDate)
+	const [currCalendars, isLoading, error] = useReserveMatrix(axisDate)
 
 	const [isPostLoading, setPostLoading] = useState(false)
 	const menuRef = useRef<HTMLSelectElement>(null)
+
+	if (error) {
+		console.warn({ error })
+		window.alert('予約可能リストの取得に失敗しました。')
+	}
 
 	/**
 	 * 選択クリアイベント処理。
@@ -181,6 +186,7 @@ export function Reserve() {
 		reserveMatrixes = [...Array(pageNum).keys()].map((e, i) => {
 			return (
 				<ReserveMatrix
+					key={`ReserveMatrix_${i}`}
 					currCalendars={currCalendars!}
 					pageLinkNum={i}
 					startDateOffsetIndex={i * RESERVE_MATRIX_DATE_LIMIT}
@@ -202,19 +208,32 @@ export function Reserve() {
 				</section>
 			) : (
 				<>
-					<section id="require">
-						<label htmlFor="email">メールアドレス</label>
-						<input id="email" type="email" />
-						<label id="nameLabel" htmlFor="name">
-							お名前
-						</label>
-						<input id="name" type="text" />
-						<label id="menuLabel" htmlFor="menu">
-							メニュー
-						</label>
-						<Menu ref={menuRef} currCalendars={currCalendars} />
-						<PageLink currCalendars={currCalendars} />
+					<section
+						id="require"
+						style={{ display: 'flex', justifyContent: 'space-around' }}
+					>
+						<span>
+							<label htmlFor="email">メールアドレス</label>
+							<br />
+							<input id="email" type="email" />
+						</span>
+						<span>
+							<label id="nameLabel" htmlFor="name">
+								お名前
+							</label>
+							<br />
+							<input id="name" type="text" />
+						</span>
+						<span>
+							<label id="menuLabel" htmlFor="menu">
+								メニュー
+							</label>
+							<br />
+							<Menu ref={menuRef} currCalendars={currCalendars} />
+						</span>
 					</section>
+
+					<PageLink currCalendars={currCalendars} />
 					<section className="reserveContainer">
 						<article id="reserveMatrix">{reserveMatrixes}</article>
 						<section id="btnSection">

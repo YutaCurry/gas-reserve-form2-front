@@ -28,13 +28,14 @@ export function ReserveMatrix({
 		RESERVE_MATRIX_DATE_LIMIT * (pageLinkNum + 1),
 	)
 	const dl = (
-		<dl className='reserveDate pageLinkData' data-pageLinkNum={pageLinkNum}>
+		<dl className='reserveDate pageLinkData' data-pagelinknum={pageLinkNum}>
 			<dl className='matrixTimeDataHeaderScroll'>
 				{/* // 時間軸 */}
 				<dd className='matrixTimeDataHeader'>
 					<>
 						{reserveMatrix.timeAxis.map(([startTime, endTime], i) => (
 							<TimeCell
+								key={`TimeCell_${i}`}
 								gridColumn={`${i + 1} / ${i + 2}`}
 								gridRow='1 / 2'
 								startTime={startTime}
@@ -42,8 +43,9 @@ export function ReserveMatrix({
 							/>
 						))}
 						{/* // 予約可能リストのレンダリング */}
-						{Object.entries(reserveMatrix.data).map(([date, times]) => (
+						{Object.entries(reserveMatrix.data).map(([date, times], i) => (
 							<EmptyCell
+								key={`EmptyCells_${i}`}
 								times={times}
 								date={date}
 								startDateOffsetIndex={startDateOffsetIndex}
@@ -56,6 +58,7 @@ export function ReserveMatrix({
 						{[...Array(reserveMatrix.dateAxis.length)].map(
 							(_, dateAxisIndex) => (
 								<ExistCell
+									key={`ExistCells_${dateAxisIndex}`}
 									dateAxisIndex={dateAxisIndex}
 									startDateOffsetIndex={startDateOffsetIndex}
 									endDateOffsetIndexExclusive={endDateOffsetIndexExclusive}
@@ -71,6 +74,7 @@ export function ReserveMatrix({
 				<dl className="matrixSpace" />
 				{slicedDateAxis.map((curr, i) => (
 					<DateCell
+						key={`DateCell_${i}`}
 						curr={curr}
 						reserveMatrix={reserveMatrix}
 						gridRow={`${i + 2} / ${i + 3}`}
