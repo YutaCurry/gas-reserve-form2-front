@@ -50,19 +50,22 @@ export function PageLink({ currCalendars }: PageLinkProps) {
 	)
 
 	return (
-		<section id="pageLinkSection">
+		<section
+			id="pageLinkSection"
+			style={{ display: 'flex', justifyContent: 'center' }}
+		>
 			{[...Array(pageNum).keys()].map((e, i) => {
 				const dateTimeStr =
 					reserveMatrix.dateAxis[(i + 1) * RESERVE_MATRIX_DATE_LIMIT - 1]
 				const dateDetail = reserveMatrix.dateDetail[dateTimeStr]
 				const tailDate = `...${dateDetail.dateStr}(${dateDetail.dayOfWeek})`
 				const pageLink = (
-					// rome-ignore lint/a11y/useValidAnchor: <explanation>
+					// eslint-disable-next-line jsx-a11y/anchor-is-valid
 					<a
 						key={`PageLink_${i}`}
-						href={' '}
 						className="pageLink"
 						data-pagelinknum={String(i)}
+						// rome-ignore lint/a11y/useValidAnchor: <explanation>
 						onClick={onPageLinkClickListener}
 					>
 						{tailDate}
