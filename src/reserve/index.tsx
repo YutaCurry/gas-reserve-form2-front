@@ -254,8 +254,9 @@ export function Reserve() {
 
 					<section className="reserveContainer">
 						<article id="reserveMatrix">
-							<PageLink currCalendars={currCalendars} />
-							{reserveMatrixes}
+							<PageLink currCalendars={currCalendars}>
+								{reserveMatrixes}
+							</PageLink>
 						</article>
 						<section id="btnSection">
 							<button id="send" onClick={onSendClickListener}>
