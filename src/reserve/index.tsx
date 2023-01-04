@@ -210,32 +210,54 @@ export function Reserve() {
 				<>
 					<section
 						id="require"
-						style={{ display: 'flex', justifyContent: 'space-around' }}
+						style={{
+							display: 'flex',
+							justifyContent: 'space-evenly',
+							flexWrap: 'wrap',
+						}}
 					>
-						<span>
+						<span
+							style={{
+								display: 'flex',
+								flexDirection: 'column',
+								flexBasis: '40%',
+							}}
+						>
 							<label htmlFor="email">メールアドレス</label>
-							<br />
 							<input id="email" type="email" />
 						</span>
-						<span>
+						<span
+							style={{
+								display: 'flex',
+								flexDirection: 'column',
+								flexBasis: '40%',
+							}}
+						>
 							<label id="nameLabel" htmlFor="name">
 								お名前
 							</label>
-							<br />
 							<input id="name" type="text" />
 						</span>
-						<span>
+						<span
+							style={{
+								display: 'flex',
+								flexDirection: 'column',
+								flexBasis: '40%',
+							}}
+						>
 							<label id="menuLabel" htmlFor="menu">
 								メニュー
 							</label>
-							<br />
 							<Menu ref={menuRef} currCalendars={currCalendars} />
 						</span>
 					</section>
 
-					<PageLink currCalendars={currCalendars} />
 					<section className="reserveContainer">
-						<article id="reserveMatrix">{reserveMatrixes}</article>
+						<article id="reserveMatrix">
+							<PageLink currCalendars={currCalendars}>
+								{reserveMatrixes}
+							</PageLink>
+						</article>
 						<section id="btnSection">
 							<button id="send" onClick={onSendClickListener}>
 								予約

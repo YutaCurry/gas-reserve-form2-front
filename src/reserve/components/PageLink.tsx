@@ -1,37 +1,31 @@
+import React, { useCallback, useEffect, useState } from 'react'
 import { ReserveMatrixData } from '../types'
 
 export interface PageLinkProps {
 	currCalendars: ReserveMatrixData | null
+	children: React.ReactNode
 }
 
 const RESERVE_MATRIX_DATE_LIMIT = 30
 
-export function PageLink({ currCalendars }: PageLinkProps) {
+export function PageLink({ currCalendars, children }: PageLinkProps) {
+	const [viewChildren, setViewChildren] = useState<React.ReactNode[]>([])
+	const [currPageNum, setCurrPageNum] = useState(0)
+
+	const togglePageLinkNum = useCallback(
+		(pageLinkNum: number) => {
+			// 一旦すべて非表示
+			const backChildren = React.Children.toArray(children)
+			setViewChildren([backChildren[pageLinkNum]])
+		},
+		[children],
+	)
+	useEffect(() => {
+		togglePageLinkNum(currPageNum)
+	}, [currCalendars, children, togglePageLinkNum, currPageNum])
+
 	if (!currCalendars) {
 		return <></>
-	}
-
-	const { reserveMatrix } = currCalendars
-	function togglePageLinkNum(pageLinkNum: number) {
-		// 一旦すべて非表示
-		const pageLinkData = document.getElementsByClassName('pageLinkData')
-		const pageLintHtmlDoms = Array.from(pageLinkData).filter(
-			(e): e is HTMLElement => e instanceof HTMLElement,
-		)
-		pageLintHtmlDoms.forEach((e) => (e.style.display = 'none'))
-		pageLintHtmlDoms.forEach((e2) => {
-			if (e2.dataset['pagelinknum'] === String(pageLinkNum)) {
-				e2.style.display = 'grid'
-			}
-		})
-		const pageLink = document.getElementsByClassName('pageLink')
-		const pageLinkHtmlDoms = Array.from(pageLink).filter(
-			(e): e is HTMLElement => e instanceof HTMLElement,
-		)
-		pageLinkHtmlDoms.forEach((e) => e.classList.remove('foucus'))
-		pageLinkHtmlDoms
-			.find((e) => e.dataset['pagelinknum'] === String(pageLinkNum))
-			?.classList.add('foucus')
 	}
 
 	function onPageLinkClickListener(
@@ -40,36 +34,42 @@ export function PageLink({ currCalendars }: PageLinkProps) {
 		e.preventDefault()
 
 		const pageLinkNum = e.currentTarget.dataset['pagelinknum']
-		togglePageLinkNum(Number(pageLinkNum!))
+		setCurrPageNum(Number(pageLinkNum || 0))
 	}
 
-	togglePageLinkNum(0)
-
 	const pageNum = Math.floor(
-		reserveMatrix.dateAxis.length / RESERVE_MATRIX_DATE_LIMIT,
+		currCalendars.reserveMatrix.dateAxis.length / RESERVE_MATRIX_DATE_LIMIT,
 	)
 
 	return (
-		<section id="pageLinkSection">
-			{[...Array(pageNum).keys()].map((e, i) => {
-				const dateTimeStr =
-					reserveMatrix.dateAxis[(i + 1) * RESERVE_MATRIX_DATE_LIMIT - 1]
-				const dateDetail = reserveMatrix.dateDetail[dateTimeStr]
-				const tailDate = `...${dateDetail.dateStr}(${dateDetail.dayOfWeek})`
-				const pageLink = (
-					// rome-ignore lint/a11y/useValidAnchor: <explanation>
-					<a
-						key={`PageLink_${i}`}
-						href={' '}
-						className="pageLink"
-						data-pagelinknum={String(i)}
-						onClick={onPageLinkClickListener}
-					>
-						{tailDate}
-					</a>
-				)
-				return pageLink
-			})}
-		</section>
+		<>
+			<section
+				id="pageLinkSection"
+				style={{ display: 'flex', justifyContent: 'center' }}
+			>
+				{[...Array(pageNum).keys()].map((e, i) => {
+					const dateTimeStr =
+						currCalendars.reserveMatrix.dateAxis[
+							(i + 1) * RESERVE_MATRIX_DATE_LIMIT - 1
+						]
+					const dateDetail = currCalendars.reserveMatrix.dateDetail[dateTimeStr]
+					const tailDate = `...${dateDetail.dateStr}(${dateDetail.dayOfWeek})`
+					const pageLink = (
+						// eslint-disable-next-line jsx-a11y/anchor-is-valid
+						<a
+							key={`PageLink_${i}`}
+							className={`pageLink ${i === currPageNum && 'foucus'}`}
+							data-pagelinknum={String(i)}
+							// rome-ignore lint/a11y/useValidAnchor: <explanation>
+							onClick={onPageLinkClickListener}
+						>
+							{tailDate}
+						</a>
+					)
+					return pageLink
+				})}
+			</section>
+			{viewChildren}
+		</>
 	)
 }
