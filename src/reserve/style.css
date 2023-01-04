@@ -154,7 +154,6 @@ select {
     grid-row-gap: 0.1rem;
     background: white;
     z-index: 10;
-    width: 20vw;
 }
 
 .matrixTimeDataHeaderScroll {
@@ -162,7 +161,7 @@ select {
     overflow-x: auto;
     grid-column: 2 / 3;
     grid-row: 1 / 2;
-    width: 82vw;
+    width: 90vw;
 }
 
 .matrixTimeDataHeader {
