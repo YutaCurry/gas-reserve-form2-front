@@ -14,8 +14,8 @@ export const Menu = forwardRef<HTMLSelectElement, MenutProps>(
 		// --- メニュー追加
 		return (
 			<select id="menu" ref={ref}>
-				{menuItems.map((e) => (
-					<option value={e.id}>
+				{menuItems.map((e, i) => (
+					<option key={`MenuOptions_${i}`} value={e.id}>
 						{e.name}({e.miniutes}分)
 					</option>
 				))}

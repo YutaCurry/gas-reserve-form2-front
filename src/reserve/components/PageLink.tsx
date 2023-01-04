@@ -12,21 +12,26 @@ export function PageLink({ currCalendars }: PageLinkProps) {
 	}
 
 	const { reserveMatrix } = currCalendars
-	// TODO
 	function togglePageLinkNum(pageLinkNum: number) {
-		// // 一旦すべて非表示
-		// const pageLinkData = document.getElementsByClassName('pageLinkData')
-		// Array.from(pageLinkData).forEach((e) => (e.style.display = 'none'))
-		// Array.from(pageLinkData).forEach((e2) => {
-		// 	if (e2.dataset.pageLinkNum == pageLinkNum) {
-		// 		e2.style.display = 'grid'
-		// 	}
-		// })
-		// const pageLink = document.getElementsByClassName('pageLink')
-		// Array.from(pageLink).forEach((e) => e.classList.remove('foucus'))
-		// Array.from(pageLink)
-		// 	.find((e) => e.dataset.pageLinkNum == pageLinkNum)
-		// 	.classList.add('foucus')
+		// 一旦すべて非表示
+		const pageLinkData = document.getElementsByClassName('pageLinkData')
+		const pageLintHtmlDoms = Array.from(pageLinkData).filter(
+			(e): e is HTMLElement => e instanceof HTMLElement,
+		)
+		pageLintHtmlDoms.forEach((e) => (e.style.display = 'none'))
+		pageLintHtmlDoms.forEach((e2) => {
+			if (e2.dataset['pagelinknum'] === String(pageLinkNum)) {
+				e2.style.display = 'grid'
+			}
+		})
+		const pageLink = document.getElementsByClassName('pageLink')
+		const pageLinkHtmlDoms = Array.from(pageLink).filter(
+			(e): e is HTMLElement => e instanceof HTMLElement,
+		)
+		pageLinkHtmlDoms.forEach((e) => e.classList.remove('foucus'))
+		pageLinkHtmlDoms
+			.find((e) => e.dataset['pagelinknum'] === String(pageLinkNum))
+			?.classList.add('foucus')
 	}
 
 	function onPageLinkClickListener(
@@ -34,7 +39,7 @@ export function PageLink({ currCalendars }: PageLinkProps) {
 	) {
 		e.preventDefault()
 
-		const pageLinkNum = e.currentTarget.dataset.pageLinkNum
+		const pageLinkNum = e.currentTarget.dataset['pagelinknum']
 		togglePageLinkNum(Number(pageLinkNum!))
 	}
 
@@ -54,9 +59,10 @@ export function PageLink({ currCalendars }: PageLinkProps) {
 				const pageLink = (
 					// rome-ignore lint/a11y/useValidAnchor: <explanation>
 					<a
+						key={`PageLink_${i}`}
 						href={' '}
 						className="pageLink"
-						data-pageLinkNum={String(i)}
+						data-pagelinknum={String(i)}
 						onClick={onPageLinkClickListener}
 					>
 						{tailDate}

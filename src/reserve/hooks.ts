@@ -4,11 +4,12 @@ import { ReserveMatrixData } from './types'
 
 export function useReserveMatrix(
 	axisDate: Date,
-): [ReserveMatrixData | null, boolean] {
+): [ReserveMatrixData | null, boolean, Error | null] {
 	const [reserveMatrix, setReserveMatrix] = useState<ReserveMatrixData | null>(
 		null,
 	)
 	const [isLoading, setLoading] = useState(false)
+	const [error, setError] = useState<Error | null>(null)
 
 	useEffect(() => {
 		setLoading(true)
@@ -17,11 +18,10 @@ export function useReserveMatrix(
 				setReserveMatrix(e)
 			})
 			.catch((e) => {
-				console.warn({ e })
-				setReserveMatrix(null)
+				setError(e)
 			})
 			.finally(() => setLoading(false))
 	}, [axisDate])
 
-	return [reserveMatrix, isLoading]
+	return [reserveMatrix, isLoading, error]
 }

@@ -28,11 +28,12 @@ export function EmptyCell({
 
 	const dateDetail = reserveMatrix.dateDetail[date]
 
-	const canReservedList: JSX.Element[] = times.times.map((time) => {
+	const canReservedList: JSX.Element[] = times.times.map((time, i) => {
 		const emptyId = `empty-${times.dateAxisIndex}-${time.timeAxisIndex}`
 
 		const el = (
 			<dd
+				key={`EmptyCell_${emptyId}_${i}`}
 				className={`data ${dateDetail.isHoliday && 'holiday'}`}
 				style={{
 					gridColumn: `${time.timeAxisIndex! + 1} / ${time.timeAxisIndex! + 2}`,
