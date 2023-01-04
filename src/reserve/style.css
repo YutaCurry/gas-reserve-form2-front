@@ -118,6 +118,10 @@ select {
     overflow-x: none;
 }
 
+.matrixDateHeader,
+.matrixTimeDataHeader {
+    min-height: 50vh;
+}
 
 .matrixDateHeader {
     grid-column: 1 / 2;
@@ -148,7 +152,7 @@ select {
     grid-template-columns: repeat(auto-fill, 4rem);
     grid-column-gap: 0.1rem;
     grid-row-gap: 0.1rem;
-    min-width: 200rem
+    min-width: 200rem;
 }
 
 .matrixSpace {
@@ -203,8 +207,8 @@ select {
 
 #btnSection {
     display: flex;
-    position: absolute;
-    /* bottom: 0; */
+    position: fixed;
+    bottom: 0;
     /* margin-top: 0.5rem; */
     /* margin-bottom: 2.5rem; */
     width: 100vw;
