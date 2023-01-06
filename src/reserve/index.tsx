@@ -6,6 +6,8 @@ import { useReserveMatrix } from './hooks'
 import { Menu, ReserveMatrix, PageLink } from './components'
 import { onCreateCalendarEvent, showMessage } from './funcs'
 import './style.css'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faHome, faRefresh } from '@fortawesome/free-solid-svg-icons'
 const RESERVE_MATRIX_DATE_LIMIT = 30
 
 export function Reserve() {
@@ -199,7 +201,26 @@ export function Reserve() {
 	return (
 		<main>
 			<section>
-				<h1>カット予約フォーム</h1>
+				<span
+					style={{
+						display: 'flex',
+						alignItems: 'center',
+						justifyContent: 'space-between',
+					}}
+				>
+					<h1>カット予約フォーム</h1>
+					<FontAwesomeIcon
+						className={'refresh'}
+						icon={faRefresh}
+						style={{
+							fontSize: '1.5rem',
+							paddingLeft: '0.5rem',
+							paddingRight: '0.5rem',
+							color: isLoading ? 'rgb(58, 70, 59)' : 'inherit',
+						}}
+						onClick={() => !isLoading && setAxisDate(new Date())}
+					/>
+				</span>
 				<span id="msgLabel" />
 			</section>
 			{currCalendars?.maintenceFlag ? (
