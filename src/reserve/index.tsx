@@ -1,13 +1,13 @@
 // import style from './style.css'
 
+import { faRefresh } from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { useRef, useState } from 'react'
 import { createCalEvents, CreateCalEventsProps, ReserveTime } from './api'
-import { useReserveMatrix } from './hooks'
-import { Menu, ReserveMatrix, PageLink } from './components'
+import { Menu, PageLink, ReserveMatrix } from './components'
 import { onCreateCalendarEvent, showMessage } from './funcs'
+import { useReserveMatrix } from './hooks'
 import './style.css'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faHome, faRefresh } from '@fortawesome/free-solid-svg-icons'
 const RESERVE_MATRIX_DATE_LIMIT = 30
 
 export function Reserve() {
@@ -15,6 +15,8 @@ export function Reserve() {
 	const [currCalendars, isLoading, error] = useReserveMatrix(axisDate)
 
 	const [isPostLoading, setPostLoading] = useState(false)
+	const emailRef = useRef<HTMLInputElement>(null)
+	const nameRef = useRef<HTMLInputElement>(null)
 	const menuRef = useRef<HTMLSelectElement>(null)
 
 	if (error) {
@@ -144,8 +146,8 @@ export function Reserve() {
 		]
 
 		const body: CreateCalEventsProps = {
-			email: document.getElementById('email')!.nodeValue!,
-			name: document.getElementById('name')!.nodeValue!,
+			email: emailRef.current?.value || '',
+			name: nameRef.current?.value || '',
 			reserveTimes,
 			menu: menuName,
 		}
@@ -165,13 +167,14 @@ export function Reserve() {
 		showMessage('', false)
 
 		try {
-			await createCalEvents(axisDate, body)
-			onCreateCalendarEvent(true)
+			const result = await createCalEvents(axisDate, body)
+			onCreateCalendarEvent(result)
 		} catch (e) {
 			onCreateCalendarEvent(false)
 			console.warn({ e })
 		} finally {
 			setAxisDate(new Date())
+			setPostLoading(false)
 		}
 		// google.script.run
 		// 	.withSuccessHandler(onCreateCalendarEvent)
@@ -197,7 +200,6 @@ export function Reserve() {
 			)
 		})
 	}
-
 	return (
 		<main>
 			<section>
@@ -245,7 +247,7 @@ export function Reserve() {
 							}}
 						>
 							<label htmlFor="email">メールアドレス</label>
-							<input id="email" type="email" />
+							<input id="email" type="email" ref={emailRef} />
 						</span>
 						<span
 							style={{
@@ -257,7 +259,7 @@ export function Reserve() {
 							<label id="nameLabel" htmlFor="name">
 								お名前
 							</label>
-							<input id="name" type="text" />
+							<input id="name" type="text" ref={nameRef} />
 						</span>
 						<span
 							style={{
