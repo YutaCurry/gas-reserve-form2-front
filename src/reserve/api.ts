@@ -50,6 +50,7 @@ export async function createCalEvents(
 				},
 			},
 		)
+		console.log('createCalEvents', res.data)
 		return res.data as boolean
 	} catch (e) {
 		return false
