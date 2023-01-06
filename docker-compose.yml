@@ -9,3 +9,5 @@ services:
         #     REACT_APP_API_URL: "https://script.google.com/macros/s/AKfycbygZkUcilnf70IuLvpuDZ83tr-lwchmYlON0a5Tk1CRt75mnx2pzOqvPvWCn_DnRjG6XA/exec"            
         volumes:
             - ./:/workspace
+        ports:
+            - 3000:3000
