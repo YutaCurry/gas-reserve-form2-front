@@ -98,6 +98,7 @@ select {
     display: inline-block;
     font-size: 1.1rem;
     margin-top: 0.5rem;
+    height: 2rem;
 }
 
 #pageLinkSection a {
@@ -224,6 +225,11 @@ select {
     margin-left: 5rem;
 } */
 
+#btnSection,
+.reserveDate {
+    border-top: 2px solid rgb(145, 200, 160);
+}
+
 #btnSection {
     display: flex;
     position: fixed;
@@ -231,8 +237,8 @@ select {
     /* margin-top: 0.5rem; */
     /* margin-bottom: 2.5rem; */
     width: 100vw;
-    height: 5vh;
-    padding-top: 0.5rem;
+    height: 4rem;
+    align-items: center;
     justify-content: space-around;
     z-index: 20;
     background-color: white;
