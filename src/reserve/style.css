@@ -89,7 +89,8 @@ select {
 }
 
 #send:disabled,
-#selectClear:disabled {
+#selectClear:disabled,
+select:disabled {
     background-color: rgb(58, 70, 59);
 }
 

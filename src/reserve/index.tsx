@@ -248,7 +248,11 @@ export function Reserve() {
 							<label id="menuLabel" htmlFor="menu">
 								メニュー
 							</label>
-							<Menu ref={menuRef} currCalendars={currCalendars} />
+							<Menu
+								ref={menuRef}
+								currCalendars={currCalendars}
+								disabled={isLoading}
+							/>
 						</span>
 					</section>
 
