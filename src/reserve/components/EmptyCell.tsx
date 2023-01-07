@@ -1,3 +1,4 @@
+import { ChecksState } from '../../util/hooks/types'
 import { DataTypeValue, ReserveMatrixData } from '../types'
 
 export interface EmptyCellProps {
@@ -7,6 +8,8 @@ export interface EmptyCellProps {
 	reserveMatrix: ReserveMatrixData['reserveMatrix']
 	date: string
 	dataClassName: string
+	selects: ChecksState
+	onChange?: React.ChangeEventHandler<HTMLInputElement>
 }
 
 export function EmptyCell({
@@ -16,6 +19,8 @@ export function EmptyCell({
 	reserveMatrix,
 	date,
 	dataClassName,
+	selects,
+	onChange = () => null,
 }: EmptyCellProps) {
 	if (
 		!(
@@ -49,6 +54,8 @@ export function EmptyCell({
 						data-date-axis-index={times.dateAxisIndex}
 						data-time-axis-index={time.timeAxisIndex}
 						type="checkbox"
+						checked={selects[emptyId]?.checked}
+						onChange={onChange}
 					/>
 					<label htmlFor={emptyId} />
 				</div>

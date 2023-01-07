@@ -3,14 +3,15 @@
 import { faRefresh } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { useEffect, useState } from 'react'
+import {
+	useStateWithInputChange,
+	useStateWithInputChecks,
+	useStateWithSelectChange,
+} from '../util/hooks'
 import { createCalEvents, CreateCalEventsProps, ReserveTime } from './api'
 import { Menu, PageLink, ReserveMatrix } from './components'
 import { onCreateCalendarEvent, showMessage } from './funcs'
-import {
-	useReserveMatrix,
-	useStateWithInputChange,
-	useStateWithSelectChange,
-} from './hooks'
+import { useReserveMatrix } from './hooks'
 import './style.css'
 const RESERVE_MATRIX_DATE_LIMIT = 30
 
@@ -21,7 +22,9 @@ export function Reserve() {
 	const [isPostLoading, setPostLoading] = useState(false)
 	const [email, setEmail] = useStateWithInputChange()
 	const [name, setName] = useStateWithInputChange()
-	const [menu, menuText, setMenu] = useStateWithSelectChange()
+
+	const [menuState, setMenu, setMenuValue] = useStateWithSelectChange()
+	const [reserveSelects, setReserveSelects] = useStateWithInputChecks()
 
 	useEffect(() => {
 		if (!error) {
@@ -29,6 +32,21 @@ export function Reserve() {
 		}
 		console.warn({ error })
 	}, [error])
+
+	useEffect(() => {
+		const menuItem = currCalendars?.menuItems[0]
+		setMenuValue(
+			menuItem
+				? {
+						value: menuItem.id,
+						text: `${menuItem.name}(${menuItem.miniutes}分)`,
+				  }
+				: {
+						value: '',
+						text: '',
+				  },
+		)
+	}, [currCalendars, setMenuValue])
 
 	/**
 	 * 選択クリアイベント処理。
@@ -54,7 +72,11 @@ export function Reserve() {
 		// --- 予約時間チェック(HOUR)
 		// セルの時間単位
 		const timeUnitOfCell = currCalendars!.periodMiniutes
-		const menuItem = currCalendars!.menuItems.find((e) => e.id === menu)
+
+		console.log('menuState', { menuState })
+		const menuItem = currCalendars!.menuItems.find(
+			(e) => e.id === menuState.value,
+		)
 		if (!menuItem) {
 			showMessage('予約できませんでした。選択されたメニューがありません。')
 			setPostLoading(false)
@@ -62,7 +84,7 @@ export function Reserve() {
 		}
 
 		const requireCells = menuItem.miniutes / timeUnitOfCell
-		const menuName = menuText
+		const menuName = menuState.value
 
 		// 予約時間
 		const dataClassName = 'reserveData'
@@ -193,10 +215,12 @@ export function Reserve() {
 			return (
 				<ReserveMatrix
 					key={`ReserveMatrix_${i}`}
-					currCalendars={currCalendars!}
+					currCalendars={currCalendars}
 					pageLinkNum={i}
 					startDateOffsetIndex={i * RESERVE_MATRIX_DATE_LIMIT}
 					endDateOffsetIndexExclusive={(i + 1) * RESERVE_MATRIX_DATE_LIMIT}
+					selects={reserveSelects}
+					onChange={setReserveSelects}
 				/>
 			)
 		})
@@ -283,6 +307,7 @@ export function Reserve() {
 							</label>
 							<Menu
 								currCalendars={currCalendars}
+								selectedId={menuState.value}
 								disabled={isLoading}
 								onChange={setMenu}
 							/>

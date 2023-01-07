@@ -1,3 +1,4 @@
+import { ChecksState } from '../../util/hooks/types'
 import { ReserveMatrixData } from '../types'
 import { DateCell } from './DateCell'
 import { EmptyCell } from './EmptyCell'
@@ -12,6 +13,8 @@ export interface ReserveMatrixProps {
 	pageLinkNum: number
 	startDateOffsetIndex: number
 	endDateOffsetIndexExclusive: number
+	selects?: ChecksState
+	onChange?: React.ChangeEventHandler<HTMLInputElement>
 }
 
 /**
@@ -22,6 +25,8 @@ export function ReserveMatrix({
 	pageLinkNum,
 	startDateOffsetIndex,
 	endDateOffsetIndexExclusive,
+	selects = {},
+	onChange = () => null,
 }: ReserveMatrixProps) {
 	const slicedDateAxis = reserveMatrix.dateAxis.slice(
 		RESERVE_MATRIX_DATE_LIMIT * pageLinkNum,
@@ -52,6 +57,8 @@ export function ReserveMatrix({
 								endDateOffsetIndexExclusive={endDateOffsetIndexExclusive}
 								reserveMatrix={reserveMatrix}
 								dataClassName={dataClassName}
+								selects={selects}
+								onChange={onChange}
 							/>
 						))}
 						{/* // 予約不可能リストのレンダリング */}
