@@ -81,6 +81,7 @@ export function useStateWithCheckChange(
 export function useStateWithInputChecks(): [
 	ChecksState,
 	(e: React.ChangeEvent<HTMLInputElement>) => void,
+	React.Dispatch<React.SetStateAction<ChecksState>>,
 ] {
 	const [checks, setChecks] = useState<ChecksState>({})
 
@@ -88,7 +89,7 @@ export function useStateWithInputChecks(): [
 		console.log('check', { id: event.target.id, checked: event.target.checked })
 		setChecks({
 			...checks,
-			id: {
+			[event.target.id]: {
 				id: event.target.id,
 				name: event.target.name,
 				value: event.target.value,
@@ -96,5 +97,5 @@ export function useStateWithInputChecks(): [
 			},
 		})
 	}
-	return [checks, onChangeEvent]
+	return [checks, onChangeEvent, setChecks]
 }

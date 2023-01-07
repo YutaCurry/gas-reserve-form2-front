@@ -2,7 +2,7 @@
 
 import { faRefresh } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import {
 	useStateWithInputChange,
 	useStateWithInputChecks,
@@ -24,7 +24,8 @@ export function Reserve() {
 	const [name, setName] = useStateWithInputChange()
 
 	const [menuState, setMenu, setMenuValue] = useStateWithSelectChange()
-	const [reserveSelects, setReserveSelects] = useStateWithInputChecks()
+	const [reserveSelects, setReserveSelects, setReserveSelectsValue] =
+		useStateWithInputChecks()
 
 	useEffect(() => {
 		if (!error) {
@@ -47,19 +48,6 @@ export function Reserve() {
 				  },
 		)
 	}, [currCalendars, setMenuValue])
-
-	/**
-	 * 選択クリアイベント処理。
-	 */
-	function onSelectClearClickListener(
-		e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
-	) {
-		Array.from(document.getElementsByClassName('reserveDataCheck')).forEach(
-			(e2) => {
-				if (e2 instanceof HTMLInputElement) e2.checked = false
-			},
-		)
-	}
 
 	/**
 	 * 予約ボタンクリックイベント処理。
@@ -330,7 +318,7 @@ export function Reserve() {
 							</button>
 							<button
 								id="selectClear"
-								onClick={onSelectClearClickListener}
+								onClick={() => setReserveSelectsValue({})}
 								disabled={isLoading}
 							>
 								選択クリア

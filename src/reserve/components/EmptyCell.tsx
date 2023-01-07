@@ -32,7 +32,6 @@ export function EmptyCell({
 	}
 
 	const dateDetail = reserveMatrix.dateDetail[date]
-
 	const canReservedList: JSX.Element[] = times.times.map((time, i) => {
 		const emptyId = `empty-${times.dateAxisIndex}-${time.timeAxisIndex}`
 
