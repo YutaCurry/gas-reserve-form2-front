@@ -2,7 +2,7 @@
 
 import { faRefresh } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { createCalEvents, CreateCalEventsProps, ReserveTime } from './api'
 import { Menu, PageLink, ReserveMatrix } from './components'
 import { onCreateCalendarEvent, showMessage } from './funcs'
@@ -19,10 +19,12 @@ export function Reserve() {
 	const nameRef = useRef<HTMLInputElement>(null)
 	const menuRef = useRef<HTMLSelectElement>(null)
 
-	if (error) {
+	useEffect(() => {
+		if (!error) {
+			return
+		}
 		console.warn({ error })
-		window.alert('予約可能リストの取得に失敗しました。')
-	}
+	}, [error])
 
 	/**
 	 * 選択クリアイベント処理。
@@ -176,9 +178,6 @@ export function Reserve() {
 			setAxisDate(new Date())
 			setPostLoading(false)
 		}
-		// google.script.run
-		// 	.withSuccessHandler(onCreateCalendarEvent)
-		// 	.createCalendarEventOuter(axisDate.getTime(), JSON.stringify(body))
 	}
 
 	let reserveMatrixes: JSX.Element[] = []
@@ -225,7 +224,11 @@ export function Reserve() {
 				</span>
 				<span id="msgLabel" />
 			</section>
-			{currCalendars?.maintenceFlag ? (
+			{error ? (
+				<section>
+					<span>予約カレンダーの取得に失敗しました。</span>
+				</section>
+			) : currCalendars?.maintenceFlag ? (
 				<section className="maintenance">
 					<span>メンテナンス中です。</span>
 				</section>
