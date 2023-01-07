@@ -1,6 +1,9 @@
 import { useEffect, useState } from 'react'
+import { useStateWithInputChecks } from '../../util/hooks'
 import { getReserveMatrix } from '../api'
+import { extractEmptyIndex } from '../funcs'
 import { ReserveMatrixData } from '../types'
+import { ReserveCheckChangeState, ReserveChecksState } from './types'
 
 /**
  * 予約リストのapi hoooks
@@ -29,4 +32,33 @@ export function useReserveMatrix(
 	}, [axisDate])
 
 	return [reserveMatrix, isLoading, error]
+}
+
+export function useStateWithReserveChecks(): [
+	ReserveChecksState,
+	(e: React.ChangeEvent<HTMLInputElement>) => void,
+	React.Dispatch<React.SetStateAction<ReserveChecksState>>,
+] {
+	const [selects, setSelects] = useStateWithInputChecks()
+	const [reserveSelects, setReserveSelects] = useState<ReserveChecksState>({})
+
+	useEffect(() => {
+		const tmpReserveSelects = Object.entries(selects).reduce(
+			(pre, [key, value]) => {
+				if (!value) {
+					return pre
+				}
+				const [dateAxisIndex, timeAxisIndex] = extractEmptyIndex(key)
+				pre[key] = {
+					...value,
+					dateAxisIndex,
+					timeAxisIndex,
+				}
+				return pre
+			},
+			{} as ReserveChecksState,
+		)
+		setReserveSelects(tmpReserveSelects)
+	}, [selects])
+	return [reserveSelects, setSelects, setReserveSelects]
 }

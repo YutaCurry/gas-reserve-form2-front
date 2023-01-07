@@ -1,4 +1,4 @@
-import { ChecksState } from '../../util/hooks/types'
+import { ReserveChecksState } from '../hooks/types'
 import { ReserveMatrixData } from '../types'
 import { DateCell } from './DateCell'
 import { EmptyCell } from './EmptyCell'
@@ -13,7 +13,7 @@ export interface ReserveMatrixProps {
 	pageLinkNum: number
 	startDateOffsetIndex: number
 	endDateOffsetIndexExclusive: number
-	selects?: ChecksState
+	selects?: ReserveChecksState
 	onChange?: React.ChangeEventHandler<HTMLInputElement>
 }
 

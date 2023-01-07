@@ -2,16 +2,17 @@
 
 import { faRefresh } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useState } from 'react'
 import {
+	useStateWithErrorMessageField,
 	useStateWithInputChange,
-	useStateWithInputChecks,
 	useStateWithSelectChange,
 } from '../util/hooks'
 import { createCalEvents, CreateCalEventsProps, ReserveTime } from './api'
 import { Menu, PageLink, ReserveMatrix } from './components'
-import { onCreateCalendarEvent, showMessage } from './funcs'
-import { useReserveMatrix } from './hooks'
+import { MessageField } from './components/MessageField'
+import { useReserveMatrix, useStateWithReserveChecks } from './hooks'
+import { ReserveCheckChangeState } from './hooks/types'
 import './style.css'
 const RESERVE_MATRIX_DATE_LIMIT = 30
 
@@ -20,12 +21,14 @@ export function Reserve() {
 	const [currCalendars, isLoading, error] = useReserveMatrix(axisDate)
 
 	const [isPostLoading, setPostLoading] = useState(false)
-	const [email, setEmail] = useStateWithInputChange()
-	const [name, setName] = useStateWithInputChange()
+	const [email, setEmail, setEmailValue] = useStateWithInputChange()
+	const [name, setName, setNameValue] = useStateWithInputChange()
 
 	const [menuState, setMenu, setMenuValue] = useStateWithSelectChange()
 	const [reserveSelects, setReserveSelects, setReserveSelectsValue] =
-		useStateWithInputChecks()
+		useStateWithReserveChecks()
+
+	const [msg, isError, setMsgField] = useStateWithErrorMessageField('')
 
 	useEffect(() => {
 		if (!error) {
@@ -66,7 +69,7 @@ export function Reserve() {
 			(e) => e.id === menuState.value,
 		)
 		if (!menuItem) {
-			showMessage('予約できませんでした。選択されたメニューがありません。')
+			setMsgField('予約できませんでした。選択されたメニューがありません。')
 			setPostLoading(false)
 			return
 		}
@@ -74,37 +77,21 @@ export function Reserve() {
 		const requireCells = menuItem.miniutes / timeUnitOfCell
 		const menuName = menuState.value
 
-		// 予約時間
-		const dataClassName = 'reserveData'
-		const dataTags = Array.from(
-			document.getElementsByClassName(`${dataClassName}Check`),
+		console.log('reserveSelects', { reserveSelects })
+		const dataChecks = Object.values(reserveSelects).filter(
+			(e): e is ReserveCheckChangeState => e !== undefined,
 		)
-		interface DateAxisType {
-			checkedTag: HTMLInputElement
-			dateAxisIndex: number
-			timeAxisIndex: number
-		}
-		const dataChecks = dataTags
-			.filter((tag): tag is HTMLInputElement => tag instanceof HTMLInputElement)
-			.filter((tag) => tag.checked)
-			.map((checkedTag) => {
-				return {
-					checkedTag,
-					...checkedTag.dataset,
-				} as DateAxisType
-			})
-
 		// 予約時間チェック(同日か)
 		const dateAxisIndexes = new Set(dataChecks.map((e) => e.dateAxisIndex))
 		if (dateAxisIndexes.size > 1) {
-			showMessage('予約できませんでした。予約は同じ日でなければなりません。')
+			setMsgField('予約できませんでした。予約は同じ日でなければなりません。')
 			setPostLoading(false)
 			return
 		}
 
 		// 予約時間チェック(指定時間であるか)
 		if (dataChecks.length !== requireCells) {
-			showMessage(
+			setMsgField(
 				`予約できませんでした。"${menuName}"の予約は${requireCells}枠分を選択してください。`,
 			)
 			setPostLoading(false)
@@ -122,6 +109,7 @@ export function Reserve() {
 				return 0
 			}
 		})
+		console.log('check', { timeAxisIndexes })
 		const [seqValid] = timeAxisIndexes.reduce(
 			(pre, curr) => {
 				const [valid, preValue] = pre
@@ -138,7 +126,7 @@ export function Reserve() {
 			[true, timeAxisIndexes[0]],
 		)
 		if (!seqValid) {
-			showMessage(
+			setMsgField(
 				'予約できませんでした。予約は連続した時間でなければなりません。',
 			)
 			setPostLoading(false)
@@ -167,24 +155,35 @@ export function Reserve() {
 		}
 
 		if (body.email === '') {
-			showMessage('予約できませんでした。メールアドレスを入力してください。')
+			setMsgField('予約できませんでした。メールアドレスを入力してください。')
 			setPostLoading(false)
 			return
 		}
 
 		if (body.name === '') {
-			showMessage('予約できませんでした。お名前を入力してください。')
+			setMsgField('予約できませんでした。お名前を入力してください。')
 			setPostLoading(false)
 			return
 		}
 
-		showMessage('', false)
+		setMsgField('', false)
 
 		try {
 			const result = await createCalEvents(axisDate, body)
-			onCreateCalendarEvent(result)
+			if (!result) {
+				console.warn('予約失敗')
+				throw new Error()
+			}
+			setEmailValue('')
+			setNameValue('')
+			setMsgField(
+				'ご入力のメールアドレスに予約招待メールを送信しました。<br />キャンセルをする場合はメール内の"参加しますか? はい - 未定 - いいえ"の"いいえ"を選択して下さい。',
+				false,
+			)
 		} catch (e) {
-			onCreateCalendarEvent(false)
+			setMsgField(
+				'予約が失敗しました。既に予約されている場合は、予約招待メールからキャンセルをしてから再度、予約してください。既に予約されていない場合は、他のユーザーが指定した時間を予約しました。',
+			)
 			console.warn({ e })
 		} finally {
 			setAxisDate(new Date())
@@ -236,7 +235,7 @@ export function Reserve() {
 						onClick={() => !isLoading && setAxisDate(new Date())}
 					/>
 				</span>
-				<span id="msgLabel" />
+				<MessageField msg={msg} isError={isError} />
 			</section>
 			{error ? (
 				<section>

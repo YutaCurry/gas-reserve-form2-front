@@ -1,4 +1,5 @@
 import { ChecksState } from '../../util/hooks/types'
+import { createEmptyIndexKey } from '../funcs'
 import { DataTypeValue, ReserveMatrixData } from '../types'
 
 export interface EmptyCellProps {
@@ -33,7 +34,7 @@ export function EmptyCell({
 
 	const dateDetail = reserveMatrix.dateDetail[date]
 	const canReservedList: JSX.Element[] = times.times.map((time, i) => {
-		const emptyId = `empty-${times.dateAxisIndex}-${time.timeAxisIndex}`
+		const emptyId = createEmptyIndexKey(times.dateAxisIndex, time.timeAxisIndex)
 
 		const el = (
 			<dd

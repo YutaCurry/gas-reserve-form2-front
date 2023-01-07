@@ -13,13 +13,17 @@ import {
  */
 export function useStateWithInputChange(
 	initialValue = '',
-): [string, (e: React.ChangeEvent<ValueElement>) => void] {
+): [
+	string,
+	(e: React.ChangeEvent<ValueElement>) => void,
+	React.Dispatch<React.SetStateAction<string>>,
+] {
 	const [what, setWhat] = useState(initialValue)
 
 	function onChangeEvent(event: React.ChangeEvent<ValueElement>) {
 		setWhat(event.target.value)
 	}
-	return [what, onChangeEvent]
+	return [what, onChangeEvent, setWhat]
 }
 
 /**
@@ -86,7 +90,6 @@ export function useStateWithInputChecks(): [
 	const [checks, setChecks] = useState<ChecksState>({})
 
 	function onChangeEvent(event: React.ChangeEvent<HTMLInputElement>) {
-		console.log('check', { id: event.target.id, checked: event.target.checked })
 		setChecks({
 			...checks,
 			[event.target.id]: {
@@ -98,4 +101,18 @@ export function useStateWithInputChecks(): [
 		})
 	}
 	return [checks, onChangeEvent, setChecks]
+}
+
+export function useStateWithErrorMessageField(
+	initMsg: string = '',
+): [string, boolean, (msg: string, isError?: boolean) => void] {
+	const [msg, setMsg] = useState(initMsg)
+	const [isError, setError] = useState(true)
+
+	function onChange(msg: string, isError: boolean = true) {
+		setMsg(msg)
+		setError(isError)
+	}
+
+	return [msg, isError, onChange]
 }
