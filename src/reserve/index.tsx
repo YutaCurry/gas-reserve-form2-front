@@ -2,11 +2,15 @@
 
 import { faRefresh } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { createCalEvents, CreateCalEventsProps, ReserveTime } from './api'
 import { Menu, PageLink, ReserveMatrix } from './components'
 import { onCreateCalendarEvent, showMessage } from './funcs'
-import { useReserveMatrix } from './hooks'
+import {
+	useReserveMatrix,
+	useStateWithInputChange,
+	useStateWithSelectChange,
+} from './hooks'
 import './style.css'
 const RESERVE_MATRIX_DATE_LIMIT = 30
 
@@ -15,9 +19,9 @@ export function Reserve() {
 	const [currCalendars, isLoading, error] = useReserveMatrix(axisDate)
 
 	const [isPostLoading, setPostLoading] = useState(false)
-	const emailRef = useRef<HTMLInputElement>(null)
-	const nameRef = useRef<HTMLInputElement>(null)
-	const menuRef = useRef<HTMLSelectElement>(null)
+	const [email, setEmail] = useStateWithInputChange()
+	const [name, setName] = useStateWithInputChange()
+	const [menu, menuText, setMenu] = useStateWithSelectChange()
 
 	useEffect(() => {
 		if (!error) {
@@ -50,9 +54,7 @@ export function Reserve() {
 		// --- 予約時間チェック(HOUR)
 		// セルの時間単位
 		const timeUnitOfCell = currCalendars!.periodMiniutes
-		const menuItem = currCalendars!.menuItems.find(
-			(e) => e.id === menuRef.current!.value,
-		)
+		const menuItem = currCalendars!.menuItems.find((e) => e.id === menu)
 		if (!menuItem) {
 			showMessage('予約できませんでした。選択されたメニューがありません。')
 			setPostLoading(false)
@@ -60,7 +62,7 @@ export function Reserve() {
 		}
 
 		const requireCells = menuItem.miniutes / timeUnitOfCell
-		const menuName = menuRef.current!.selectedOptions[0].text
+		const menuName = menuText
 
 		// 予約時間
 		const dataClassName = 'reserveData'
@@ -148,8 +150,8 @@ export function Reserve() {
 		]
 
 		const body: CreateCalEventsProps = {
-			email: emailRef.current?.value || '',
-			name: nameRef.current?.value || '',
+			email,
+			name,
 			reserveTimes,
 			menu: menuName,
 		}
@@ -250,7 +252,12 @@ export function Reserve() {
 							}}
 						>
 							<label htmlFor="email">メールアドレス</label>
-							<input id="email" type="email" ref={emailRef} />
+							<input
+								id="email"
+								type="email"
+								value={email}
+								onChange={setEmail}
+							/>
 						</span>
 						<span
 							style={{
@@ -262,7 +269,7 @@ export function Reserve() {
 							<label id="nameLabel" htmlFor="name">
 								お名前
 							</label>
-							<input id="name" type="text" ref={nameRef} />
+							<input id="name" type="text" value={name} onChange={setName} />
 						</span>
 						<span
 							style={{
@@ -275,9 +282,9 @@ export function Reserve() {
 								メニュー
 							</label>
 							<Menu
-								ref={menuRef}
 								currCalendars={currCalendars}
 								disabled={isLoading}
+								onChange={setMenu}
 							/>
 						</span>
 					</section>
