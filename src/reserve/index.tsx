@@ -2,7 +2,7 @@
 
 import { faRefresh } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import {
 	useStateWithErrorMessageField,
 	useStateWithInputChange,
@@ -29,6 +29,7 @@ export function Reserve() {
 		useStateWithReserveChecks()
 
 	const [msg, isError, setMsgField] = useStateWithErrorMessageField('')
+	const [currPageNum, setCurrPageNum] = useState(0)
 
 	useEffect(() => {
 		if (!error) {
@@ -191,27 +192,34 @@ export function Reserve() {
 		}
 	}
 
-	let reserveMatrixes: JSX.Element[] = []
-	if (currCalendars) {
+	const [pageNum, reserveMatrix] = useMemo(() => {
+		if (!currCalendars) return [0, []]
 		const { reserveMatrix } = currCalendars
-		const pageNum = Math.floor(
+		const tmpPageNum = Math.floor(
 			reserveMatrix.dateAxis.length / RESERVE_MATRIX_DATE_LIMIT,
 		)
+		const tmpSlicedDateAxis = reserveMatrix.dateAxis.slice(
+			RESERVE_MATRIX_DATE_LIMIT * currPageNum,
+			RESERVE_MATRIX_DATE_LIMIT * (currPageNum + 1),
+		)
+		console.log('useMemo reserveMatrix', { currPageNum })
+		return [
+			tmpPageNum,
+			<ReserveMatrix
+				key={`ReserveMatrix_${currPageNum}`}
+				currCalendars={currCalendars}
+				pageLinkNum={currPageNum}
+				startDateOffsetIndex={currPageNum * RESERVE_MATRIX_DATE_LIMIT}
+				endDateOffsetIndexExclusive={
+					(currPageNum + 1) * RESERVE_MATRIX_DATE_LIMIT
+				}
+				selects={reserveSelects}
+				onChange={setReserveSelects}
+				slicedDateAxis={tmpSlicedDateAxis}
+			/>,
+		]
+	}, [currCalendars, currPageNum, reserveSelects, setReserveSelects])
 
-		reserveMatrixes = [...Array(pageNum).keys()].map((e, i) => {
-			return (
-				<ReserveMatrix
-					key={`ReserveMatrix_${i}`}
-					currCalendars={currCalendars}
-					pageLinkNum={i}
-					startDateOffsetIndex={i * RESERVE_MATRIX_DATE_LIMIT}
-					endDateOffsetIndexExclusive={(i + 1) * RESERVE_MATRIX_DATE_LIMIT}
-					selects={reserveSelects}
-					onChange={setReserveSelects}
-				/>
-			)
-		})
-	}
 	return (
 		<main>
 			<section>
@@ -303,9 +311,13 @@ export function Reserve() {
 
 					<section className="reserveContainer">
 						<article id="reserveMatrix">
-							<PageLink currCalendars={currCalendars}>
-								{reserveMatrixes}
-							</PageLink>
+							<PageLink
+								currCalendars={currCalendars}
+								pageNum={pageNum}
+								currPageNum={currPageNum}
+								setCurrPageNum={setCurrPageNum}
+							/>
+							{reserveMatrix}
 						</article>
 						<section id="btnSection">
 							<button

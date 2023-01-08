@@ -9,29 +9,33 @@ export const RESERVE_MATRIX_DATE_LIMIT = 30
 const dataClassName = 'reserveData'
 
 export interface ReserveMatrixProps {
-	currCalendars: ReserveMatrixData
+	currCalendars: ReserveMatrixData | null
 	pageLinkNum: number
 	startDateOffsetIndex: number
 	endDateOffsetIndexExclusive: number
 	selects?: ReserveChecksState
 	onChange?: React.ChangeEventHandler<HTMLInputElement>
+	slicedDateAxis: string[]
 }
 
 /**
  * 予約リスト作成。
  */
 export function ReserveMatrix({
-	currCalendars: { reserveMatrix },
+	currCalendars,
 	pageLinkNum,
 	startDateOffsetIndex,
 	endDateOffsetIndexExclusive,
+	slicedDateAxis,
 	selects = {},
 	onChange = () => null,
 }: ReserveMatrixProps) {
-	const slicedDateAxis = reserveMatrix.dateAxis.slice(
-		RESERVE_MATRIX_DATE_LIMIT * pageLinkNum,
-		RESERVE_MATRIX_DATE_LIMIT * (pageLinkNum + 1),
-	)
+	if (!currCalendars) {
+		console.log('empty render')
+		return <></>
+	}
+	console.log('ReserveMatrix render', { pageLinkNum })
+	const { reserveMatrix } = currCalendars
 	const dl = (
 		<dl className='reserveDate pageLinkData' data-pagelinknum={pageLinkNum}>
 			<dl className='matrixTimeDataHeaderScroll'>
