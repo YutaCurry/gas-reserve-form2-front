@@ -192,7 +192,7 @@ export function Reserve() {
 		}
 	}
 
-	const [pageNum, reserveMatrix] = useMemo(() => {
+	const [pageNum, slicedDateAxis] = useMemo(() => {
 		if (!currCalendars) return [0, []]
 		const { reserveMatrix } = currCalendars
 		const tmpPageNum = Math.floor(
@@ -203,22 +203,8 @@ export function Reserve() {
 			RESERVE_MATRIX_DATE_LIMIT * (currPageNum + 1),
 		)
 		console.log('useMemo reserveMatrix', { currPageNum })
-		return [
-			tmpPageNum,
-			<ReserveMatrix
-				key={`ReserveMatrix_${currPageNum}`}
-				currCalendars={currCalendars}
-				pageLinkNum={currPageNum}
-				startDateOffsetIndex={currPageNum * RESERVE_MATRIX_DATE_LIMIT}
-				endDateOffsetIndexExclusive={
-					(currPageNum + 1) * RESERVE_MATRIX_DATE_LIMIT
-				}
-				selects={reserveSelects}
-				onChange={setReserveSelects}
-				slicedDateAxis={tmpSlicedDateAxis}
-			/>,
-		]
-	}, [currCalendars, currPageNum, reserveSelects, setReserveSelects])
+		return [tmpPageNum, tmpSlicedDateAxis]
+	}, [currCalendars, currPageNum])
 
 	return (
 		<main>
@@ -317,7 +303,19 @@ export function Reserve() {
 								currPageNum={currPageNum}
 								setCurrPageNum={setCurrPageNum}
 							/>
-							{reserveMatrix}
+
+							<ReserveMatrix
+								key={`ReserveMatrix_${currPageNum}`}
+								currCalendars={currCalendars}
+								pageLinkNum={currPageNum}
+								startDateOffsetIndex={currPageNum * RESERVE_MATRIX_DATE_LIMIT}
+								endDateOffsetIndexExclusive={
+									(currPageNum + 1) * RESERVE_MATRIX_DATE_LIMIT
+								}
+								selects={reserveSelects}
+								onChange={setReserveSelects}
+								slicedDateAxis={slicedDateAxis}
+							/>
 						</article>
 						<section id="btnSection">
 							<button
