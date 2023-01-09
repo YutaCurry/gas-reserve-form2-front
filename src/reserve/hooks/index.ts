@@ -22,6 +22,7 @@ export function useReserveMatrix(
 
 	useEffect(() => {
 		setLoading(true)
+		setError(null)
 		getReserveMatrix()
 			.then((e) => {
 				setReserveMatrix(e)

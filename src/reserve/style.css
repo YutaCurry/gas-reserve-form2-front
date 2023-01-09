@@ -127,10 +127,6 @@ select:disabled {
     height: 72vh;
 }
 
-.matrixTimeDataHeaderScroll {
-    height: 140vh;
-}
-
 .reserveDate {
     display: grid;
     grid-template-rows: auto;
@@ -140,9 +136,10 @@ select:disabled {
     margin-top: 0;
 }
 
-.matrixDateHeader,
-.matrixTimeDataHeader {
-    min-height: 50vh;
+
+.matrixTimeDataHeaderScroll,
+.matrixDateHeader {
+    height: 140vh;
 }
 
 .matrixDateHeader {
@@ -163,7 +160,7 @@ select:disabled {
     overflow-x: auto;
     grid-column: 2 / 3;
     grid-row: 1 / 2;
-    width: 90vw;
+    width: 95vw;
 }
 
 .matrixTimeDataHeader {
@@ -174,7 +171,13 @@ select:disabled {
     grid-column-gap: 0.1rem;
     grid-row-gap: 0.1rem;
     min-width: 200rem;
+    /* width: calc(100% + 5rem); */
 }
+
+/* .matrixTimeDataHeader .time,
+.matrixTimeDataHeader .data {
+    margin-left: 0
+} */
 
 .matrixSpace {
     grid-row: 1 / 2;
