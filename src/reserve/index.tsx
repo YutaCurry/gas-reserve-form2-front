@@ -2,7 +2,7 @@
 
 import { faRefresh } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import {
 	useStateWithErrorMessageField,
 	useStateWithInputChange,
@@ -11,10 +11,10 @@ import {
 import { createCalEvents, CreateCalEventsProps, ReserveTime } from './api'
 import { Menu, PageLink, ReserveMatrix } from './components'
 import { MessageField } from './components/MessageField'
+import { DateType } from './components/types'
 import { useReserveMatrix, useStateWithReserveChecks } from './hooks'
 import { ReserveCheckChangeState } from './hooks/types'
 import './style.css'
-import { DateType } from './components/types'
 const RESERVE_MATRIX_DATE_LIMIT = 30
 
 export function Reserve() {
