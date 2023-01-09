@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useCallback, useState } from 'react'
 import {
 	CheckChangeState,
 	ChecksState,
@@ -88,6 +88,8 @@ export function useStateWithInputChecks(): [
 	React.Dispatch<React.SetStateAction<ChecksState>>,
 ] {
 	const [checks, setChecks] = useState<ChecksState>({})
+
+	console.log('useStateWithInputChecks', checks)
 
 	function onChangeEvent(event: React.ChangeEvent<HTMLInputElement>) {
 		setChecks({
