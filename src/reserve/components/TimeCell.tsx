@@ -1,22 +1,21 @@
-export interface TimeCellProps {
-	gridColumn: string
-	gridRow: string
-	startTime: string
-	endTime: string
+export interface TimeCellsProps {
+	timeAxis: string[][]
 }
 
-export function TimeCell({
-	gridColumn,
-	gridRow,
-	startTime,
-	endTime,
-}: TimeCellProps) {
-	return (
-		<dt className="time" style={{ gridColumn, gridRow }}>
-			<span>
-				{startTime}-<br />
-				{endTime}
-			</span>
-		</dt>
-	)
+export function TimeCells({ timeAxis }: TimeCellsProps) {
+	const els = timeAxis.map(([startTime, endTime], i) => {
+		return (
+			<dt
+				key={`TimeCell_${i}`}
+				className="time"
+				style={{ gridColumn: `${i + 1} / ${i + 2}`, gridRow: '1 / 2' }}
+			>
+				<span>
+					{startTime}-<br />
+					{endTime}
+				</span>
+			</dt>
+		)
+	})
+	return <>{els}</>
 }

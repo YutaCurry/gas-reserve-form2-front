@@ -14,6 +14,7 @@ import { MessageField } from './components/MessageField'
 import { useReserveMatrix, useStateWithReserveChecks } from './hooks'
 import { ReserveCheckChangeState } from './hooks/types'
 import './style.css'
+import { DateType } from './components/types'
 const RESERVE_MATRIX_DATE_LIMIT = 30
 
 export function Reserve() {
@@ -80,7 +81,8 @@ export function Reserve() {
 
 		console.log('reserveSelects', { reserveSelects })
 		const dataChecks = Object.values(reserveSelects).filter(
-			(e): e is ReserveCheckChangeState => e !== undefined,
+			// rome-ignore lint/complexity/useSimplifiedLogicExpression: <explanation>
+			(e): e is ReserveCheckChangeState => e?.checked || false,
 		)
 		// 予約時間チェック(同日か)
 		const dateAxisIndexes = new Set(dataChecks.map((e) => e.dateAxisIndex))
@@ -192,18 +194,45 @@ export function Reserve() {
 		}
 	}
 
-	const [pageNum, slicedDateAxis] = useMemo(() => {
+	const [
+		pageNum,
+		slicedDateAxis,
+		canReserveData,
+		startDateOffsetIndex,
+		endDateOffsetIndexExclusive,
+	] = useMemo(() => {
 		if (!currCalendars) return [0, []]
 		const { reserveMatrix } = currCalendars
-		const tmpPageNum = Math.floor(
+		const pageNum = Math.floor(
 			reserveMatrix.dateAxis.length / RESERVE_MATRIX_DATE_LIMIT,
 		)
-		const tmpSlicedDateAxis = reserveMatrix.dateAxis.slice(
+		const slicedDateAxis = reserveMatrix.dateAxis.slice(
 			RESERVE_MATRIX_DATE_LIMIT * currPageNum,
 			RESERVE_MATRIX_DATE_LIMIT * (currPageNum + 1),
 		)
 		console.log('useMemo reserveMatrix', { currPageNum })
-		return [tmpPageNum, tmpSlicedDateAxis]
+
+		const startDateOffsetIndex = currPageNum * RESERVE_MATRIX_DATE_LIMIT
+		const endDateOffsetIndexExclusive =
+			(currPageNum + 1) * RESERVE_MATRIX_DATE_LIMIT
+
+		const canReserveData = Object.entries(currCalendars.reserveMatrix.data)
+			.filter(
+				([, times]) =>
+					times.dateAxisIndex >= startDateOffsetIndex &&
+					times.dateAxisIndex < endDateOffsetIndexExclusive,
+			)
+			.reduce((pre, [date, times]) => {
+				pre[date] = times
+				return pre
+			}, {} as DateType)
+		return [
+			pageNum,
+			slicedDateAxis,
+			canReserveData,
+			startDateOffsetIndex,
+			endDateOffsetIndexExclusive,
+		]
 	}, [currCalendars, currPageNum])
 
 	return (
@@ -308,13 +337,12 @@ export function Reserve() {
 								key={`ReserveMatrix_${currPageNum}`}
 								currCalendars={currCalendars}
 								pageLinkNum={currPageNum}
-								startDateOffsetIndex={currPageNum * RESERVE_MATRIX_DATE_LIMIT}
-								endDateOffsetIndexExclusive={
-									(currPageNum + 1) * RESERVE_MATRIX_DATE_LIMIT
-								}
 								selects={reserveSelects}
 								onChange={setReserveSelects}
+								startDateOffsetIndex={startDateOffsetIndex}
+								endDateOffsetIndexExclusive={endDateOffsetIndexExclusive}
 								slicedDateAxis={slicedDateAxis}
+								canReserveData={canReserveData}
 							/>
 						</article>
 						<section id="btnSection">

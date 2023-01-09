@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react'
 import { useStateWithInputChecks } from '../../util/hooks'
 import { getReserveMatrix } from '../api'
+import { ReserveMatrixData } from '../components/types'
 import { extractEmptyIndex } from '../funcs'
-import { ReserveMatrixData } from '../types'
-import { ReserveCheckChangeState, ReserveChecksState } from './types'
+import { ReserveChecksState } from './types'
 
 /**
  * 予約リストのapi hoooks

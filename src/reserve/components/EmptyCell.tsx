@@ -1,69 +1,65 @@
 import { ChecksState } from '../../util/hooks/types'
 import { createEmptyIndexKey } from '../funcs'
-import { DataTypeValue, ReserveMatrixData } from '../types'
+import { DateDetail, DateType } from './types'
 
-export interface EmptyCellProps {
-	times: DataTypeValue
-	startDateOffsetIndex: number
-	endDateOffsetIndexExclusive: number
-	reserveMatrix: ReserveMatrixData['reserveMatrix']
-	date: string
-	dataClassName: string
+export interface EmptyCellsProps {
 	selects: ChecksState
+	dateDetail: DateDetail
 	onChange?: React.ChangeEventHandler<HTMLInputElement>
+	canReserveData: DateType
+	startDateOffsetIndex: number
 }
 
-export function EmptyCell({
-	times,
-	startDateOffsetIndex,
-	endDateOffsetIndexExclusive,
-	reserveMatrix,
-	date,
-	dataClassName,
+export function EmptyCells({
+	dateDetail,
 	selects,
 	onChange = () => null,
-}: EmptyCellProps) {
-	if (
-		!(
-			times.dateAxisIndex >= startDateOffsetIndex &&
-			times.dateAxisIndex < endDateOffsetIndexExclusive
-		)
-	) {
-		return <></>
-	}
+	canReserveData,
+	startDateOffsetIndex,
+}: EmptyCellsProps) {
+	const canReservedList: JSX.Element[] = Object.entries(canReserveData).flatMap(
+		([date, times]) => {
+			const dateDetailValue = dateDetail[date]
+			const timesEl: JSX.Element[] = times.times.map((time, i) => {
+				const emptyId = createEmptyIndexKey(
+					times.dateAxisIndex,
+					time.timeAxisIndex,
+				)
 
-	const dateDetail = reserveMatrix.dateDetail[date]
-	const canReservedList: JSX.Element[] = times.times.map((time, i) => {
-		const emptyId = createEmptyIndexKey(times.dateAxisIndex, time.timeAxisIndex)
+				const gridRow = `${times.dateAxisIndex + 2 - startDateOffsetIndex} / ${
+					times.dateAxisIndex + 3 - startDateOffsetIndex
+				}`
+				// console.log(`EmptyCell_${emptyId}_${i}`)
+				// console.log({ emptyId, selects })
+				const el = (
+					<dd
+						key={`EmptyCell_${emptyId}`}
+						className={`data ${dateDetailValue.isHoliday && 'holiday'}`}
+						style={{
+							gridColumn: `${time.timeAxisIndex! + 1} / ${
+								time.timeAxisIndex! + 2
+							}`,
+							gridRow,
+						}}
+					>
+						<div>
+							<input
+								id={emptyId}
+								className='reserveDataCheck'
+								type="checkbox"
+								checked={selects[emptyId]?.checked}
+								onChange={onChange}
+							/>
+							<label htmlFor={emptyId} />
+						</div>
+					</dd>
+				)
 
-		const el = (
-			<dd
-				key={`EmptyCell_${emptyId}_${i}`}
-				className={`data ${dateDetail.isHoliday && 'holiday'}`}
-				style={{
-					gridColumn: `${time.timeAxisIndex! + 1} / ${time.timeAxisIndex! + 2}`,
-					gridRow: `${times.dateAxisIndex + 2 - startDateOffsetIndex} / ${
-						times.dateAxisIndex + 3 - startDateOffsetIndex
-					}`,
-				}}
-			>
-				<div className={dataClassName}>
-					<input
-						id={emptyId}
-						className={`${dataClassName}Check`}
-						data-date-axis-index={times.dateAxisIndex}
-						data-time-axis-index={time.timeAxisIndex}
-						type="checkbox"
-						checked={selects[emptyId]?.checked}
-						onChange={onChange}
-					/>
-					<label htmlFor={emptyId} />
-				</div>
-			</dd>
-		)
-
-		return el
-	})
+				return el
+			})
+			return timesEl
+		},
+	)
 
 	return <>{canReservedList}</>
 }

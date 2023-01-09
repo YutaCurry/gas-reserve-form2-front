@@ -1,4 +1,4 @@
-import { ReserveMatrixData } from '../types'
+import { ReserveMatrixData } from './types'
 
 export interface MenutProps {
 	currCalendars: ReserveMatrixData | null

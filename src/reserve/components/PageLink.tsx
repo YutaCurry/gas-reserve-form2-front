@@ -1,5 +1,5 @@
 import React from 'react'
-import { ReserveMatrixData } from '../types'
+import { ReserveMatrixData } from './types'
 
 export interface PageLinkProps {
 	currCalendars: ReserveMatrixData | null
