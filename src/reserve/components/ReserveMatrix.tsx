@@ -1,85 +1,85 @@
-import { ReserveMatrixData } from '../types'
-import { DateCell } from './DateCell'
-import { EmptyCell } from './EmptyCell'
-import { ExistCell } from './ExistCell'
-import { TimeCell } from './TimeCell'
+import { ReserveChecksState } from '../hooks/types'
+import { DateCells } from './DateCell'
+import { EmptyCells } from './EmptyCell'
+import { ExistCells } from './ExistCell'
+import { TimeCells } from './TimeCell'
+import { DateType, ReserveMatrixData } from './types'
 
 export const RESERVE_MATRIX_DATE_LIMIT = 30
-const dataClassName = 'reserveData'
 
 export interface ReserveMatrixProps {
-	currCalendars: ReserveMatrixData
+	currCalendars: ReserveMatrixData | null
 	pageLinkNum: number
-	startDateOffsetIndex: number
-	endDateOffsetIndexExclusive: number
+	canReserveData: DateType | undefined
+	startDateOffsetIndex: number | undefined
+	endDateOffsetIndexExclusive: number | undefined
+	selects?: ReserveChecksState
+	onChange?: React.ChangeEventHandler<HTMLInputElement>
+	slicedDateAxis: string[]
 }
 
 /**
  * 予約リスト作成。
  */
 export function ReserveMatrix({
-	currCalendars: { reserveMatrix },
+	currCalendars,
 	pageLinkNum,
 	startDateOffsetIndex,
 	endDateOffsetIndexExclusive,
+	slicedDateAxis,
+	canReserveData,
+	selects = {},
+	onChange = () => null,
 }: ReserveMatrixProps) {
-	const slicedDateAxis = reserveMatrix.dateAxis.slice(
-		RESERVE_MATRIX_DATE_LIMIT * pageLinkNum,
-		RESERVE_MATRIX_DATE_LIMIT * (pageLinkNum + 1),
-	)
+	if (
+		!(
+			currCalendars &&
+			canReserveData &&
+			startDateOffsetIndex !== undefined &&
+			endDateOffsetIndexExclusive !== undefined
+		)
+	) {
+		// console.log('empty render', {
+		// 	currCalendars,
+		// 	canReserveData,
+		// 	startDateOffsetIndex,
+		// 	endDateOffsetIndexExclusive,
+		// })
+		return <></>
+	}
+	// console.log('ReserveMatrix render', { pageLinkNum })
+	const { reserveMatrix } = currCalendars
 	const dl = (
 		<dl className='reserveDate pageLinkData' data-pagelinknum={pageLinkNum}>
 			<dl className='matrixTimeDataHeaderScroll'>
 				{/* // 時間軸 */}
 				<dd className='matrixTimeDataHeader'>
-					<>
-						{reserveMatrix.timeAxis.map(([startTime, endTime], i) => (
-							<TimeCell
-								key={`TimeCell_${i}`}
-								gridColumn={`${i + 1} / ${i + 2}`}
-								gridRow='1 / 2'
-								startTime={startTime}
-								endTime={endTime}
-							/>
-						))}
-						{/* // 予約可能リストのレンダリング */}
-						{Object.entries(reserveMatrix.data).map(([date, times], i) => (
-							<EmptyCell
-								key={`EmptyCells_${i}`}
-								times={times}
-								date={date}
-								startDateOffsetIndex={startDateOffsetIndex}
-								endDateOffsetIndexExclusive={endDateOffsetIndexExclusive}
-								reserveMatrix={reserveMatrix}
-								dataClassName={dataClassName}
-							/>
-						))}
-						{/* // 予約不可能リストのレンダリング */}
-						{[...Array(reserveMatrix.dateAxis.length)].map(
-							(_, dateAxisIndex) => (
-								<ExistCell
-									key={`ExistCells_${dateAxisIndex}`}
-									dateAxisIndex={dateAxisIndex}
-									startDateOffsetIndex={startDateOffsetIndex}
-									endDateOffsetIndexExclusive={endDateOffsetIndexExclusive}
-									reserveMatrix={reserveMatrix}
-								/>
-							),
-						)}
-					</>
+					<TimeCells timeAxis={reserveMatrix.timeAxis} />
+					{/* // 予約可能リストのレンダリング */}
+					<EmptyCells
+						selects={selects}
+						onChange={onChange}
+						canReserveData={canReserveData}
+						startDateOffsetIndex={startDateOffsetIndex}
+						dateDetail={reserveMatrix.dateDetail}
+					/>
+					{/* // 予約不可能リストのレンダリング */}
+					<ExistCells
+						startDateOffsetIndex={startDateOffsetIndex}
+						endDateOffsetIndexExclusive={endDateOffsetIndexExclusive}
+						dateAxis={reserveMatrix.dateAxis}
+						timeAxis={reserveMatrix.timeAxis}
+						data={reserveMatrix.data}
+					/>
 				</dd>
 			</dl>
 			{/* // 日付軸 */}
 			<dd className="matrixDateHeader">
 				<dl className="matrixSpace" />
-				{slicedDateAxis.map((curr, i) => (
-					<DateCell
-						key={`DateCell_${i}`}
-						curr={curr}
-						reserveMatrix={reserveMatrix}
-						gridRow={`${i + 2} / ${i + 3}`}
-					/>
-				))}
+				<DateCells
+					dateDetail={reserveMatrix.dateDetail}
+					slicedDateAxis={slicedDateAxis}
+				/>
 			</dd>
 		</dl>
 	)

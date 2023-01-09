@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { isReserveMatrix } from './types'
+import { isReserveMatrix } from './components/types'
 
 export async function getReserveMatrix(axisDate: Date = new Date()) {
 	const res = await axios.post(
@@ -45,6 +45,5 @@ export async function createCalEvents(
 			},
 		},
 	)
-	console.log('createCalEvents', res.data)
 	return res.data as boolean
 }

@@ -1,66 +1,61 @@
-import { ReserveMatrixData } from '../types'
-import { RESERVE_MATRIX_DATE_LIMIT } from './ReserveMatrix'
+import { DateType } from './types'
 
-export interface ExistCellProps {
-	dateAxisIndex: number
+export interface ExistCellsProps {
 	startDateOffsetIndex: number
 	endDateOffsetIndexExclusive: number
-	reserveMatrix: ReserveMatrixData['reserveMatrix']
+	timeAxis: string[][]
+	dateAxis: string[]
+	data: DateType
 }
 
-export function ExistCell({
-	dateAxisIndex,
+export function ExistCells({
 	startDateOffsetIndex,
 	endDateOffsetIndexExclusive,
-	reserveMatrix,
-}: ExistCellProps) {
-	if (
-		!(
-			dateAxisIndex >= startDateOffsetIndex &&
-			dateAxisIndex < endDateOffsetIndexExclusive
+	timeAxis,
+	dateAxis,
+	data,
+}: ExistCellsProps) {
+	// console.log('empty empty', {
+	// 	startDateOffsetIndex,
+	// 	endDateOffsetIndexExclusive,
+	// })
+	const cannotReserveList = dateAxis
+		.filter(
+			(_, dateAxisIndex) =>
+				dateAxisIndex >= startDateOffsetIndex &&
+				dateAxisIndex < endDateOffsetIndexExclusive,
 		)
-	) {
-		return <></>
-	}
+		.map((e, i): [string, number] => [e, i + startDateOffsetIndex])
+		.flatMap(([date, dateAxisIndex]) => {
+			return [...Array(timeAxis.length)].map((_, timeAxisIndex) => {
+				const element = (
+					<dd
+						key={`ExistCell_${dateAxisIndex}_${timeAxisIndex}`}
+						className="data empty"
+						style={{
+							gridColumn: `${timeAxisIndex + 1} / ${timeAxisIndex + 2}`,
+							gridRow: `${dateAxisIndex + 2 - startDateOffsetIndex} / ${
+								dateAxisIndex + 3 - startDateOffsetIndex
+							}`,
+						}}
+					/>
+				)
 
-	const cannotReserveList = [...Array(reserveMatrix.timeAxis.length)].map(
-		(_, timeAxisIndex) => {
-			const exist = Object.entries(reserveMatrix.data).find(([date, times]) => {
-				if (reserveMatrix.dateAxis.indexOf(date) === dateAxisIndex) {
-					if (
-						times.times.find((e) => {
-							return e.timeAxisIndex === timeAxisIndex
-						})
-					) {
-						return true
-					}
+				const targetDate = data[date]
+				if (!targetDate) {
+					return element
+				}
+				const targetTime = targetDate.times.find(
+					(e) => e.timeAxisIndex === timeAxisIndex,
+				)
+
+				if (!targetTime) {
+					return element
 				}
 
-				return false
-			})
-			if (exist) {
 				return null
-			}
-
-			const el = (
-				<dd
-					key={`ExistCell_${dateAxisIndex}_${timeAxisIndex}`}
-					className="data empty"
-					style={{
-						gridColumn: `${timeAxisIndex + 1} / ${timeAxisIndex + 2}`,
-						gridRow: `${dateAxisIndex + 2 - startDateOffsetIndex} / ${
-							dateAxisIndex + 3 - startDateOffsetIndex
-						}`,
-					}}
-					data-pagelinknum={Math.floor(
-						dateAxisIndex / RESERVE_MATRIX_DATE_LIMIT,
-					)}
-				/>
-			)
-			return el
-		},
-	)
-
+			})
+		})
 	return (
 		<>
 			{cannotReserveList.filter((e): e is NonNullable<typeof e> => e != null)}
