@@ -2,7 +2,7 @@
 
 import { faRefresh } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import {
 	useStateWithErrorMessageField,
 	useStateWithInputChange,
@@ -11,10 +11,10 @@ import {
 import { createCalEvents, CreateCalEventsProps, ReserveTime } from './api'
 import { Menu, PageLink, ReserveMatrix } from './components'
 import { MessageField } from './components/MessageField'
-import { DateType } from './components/types'
 import { useReserveMatrix, useStateWithReserveChecks } from './hooks'
 import { ReserveCheckChangeState } from './hooks/types'
 import './style.css'
+import { DateType } from './components/types'
 const RESERVE_MATRIX_DATE_LIMIT = 30
 
 export function Reserve() {
@@ -25,18 +25,7 @@ export function Reserve() {
 	const [email, setEmail, setEmailValue] = useStateWithInputChange()
 	const [name, setName, setNameValue] = useStateWithInputChange()
 
-	const menuItem = currCalendars?.menuItems[0]
-	const [menuState, setMenu] = useStateWithSelectChange(
-		menuItem
-			? {
-					value: menuItem.id,
-					text: `${menuItem.name}(${menuItem.miniutes}分)`,
-			  }
-			: {
-					value: '',
-					text: '',
-			  },
-	)
+	const [menuState, setMenu, setMenuValue] = useStateWithSelectChange()
 	const [reserveSelects, setReserveSelects, setReserveSelectsValue] =
 		useStateWithReserveChecks()
 
@@ -49,6 +38,21 @@ export function Reserve() {
 		}
 		console.warn({ error })
 	}, [error])
+
+	useEffect(() => {
+		const menuItem = currCalendars?.menuItems[0]
+		setMenuValue(
+			menuItem
+				? {
+						value: menuItem.id,
+						text: `${menuItem.name}(${menuItem.miniutes}分)`,
+				  }
+				: {
+						value: '',
+						text: '',
+				  },
+		)
+	}, [currCalendars, setMenuValue])
 
 	/**
 	 * 予約ボタンクリックイベント処理。
