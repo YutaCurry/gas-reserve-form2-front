@@ -91,26 +91,17 @@ export function useStateWithInputChecks(): [
 
 	console.log('useStateWithInputChecks', checks)
 
-	const onChangeEvent = useCallback(
-		(event: React.ChangeEvent<HTMLInputElement>) => {
-			// console.log({
-			// 	id: event.target.id,
-			// 	checked: event.target.checked,
-			// 	checks,
-			// })
-			console.log('inner', checks)
-			setChecks({
-				...checks,
-				[event.target.id]: {
-					id: event.target.id,
-					name: event.target.name,
-					value: event.target.value,
-					checked: event.target.checked,
-				},
-			})
-		},
-		[checks],
-	)
+	function onChangeEvent(event: React.ChangeEvent<HTMLInputElement>) {
+		setChecks({
+			...checks,
+			[event.target.id]: {
+				id: event.target.id,
+				name: event.target.name,
+				value: event.target.value,
+				checked: event.target.checked,
+			},
+		})
+	}
 	return [checks, onChangeEvent, setChecks]
 }
 
