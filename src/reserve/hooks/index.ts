@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useStateWithInputChecks } from '../../util/hooks'
+import { ChecksState } from '../../util/hooks/types'
 import { getReserveMatrix } from '../api'
 import { ReserveMatrixData } from '../components/types'
 import { extractEmptyIndex } from '../funcs'
@@ -37,9 +38,9 @@ export function useReserveMatrix(
 export function useStateWithReserveChecks(): [
 	ReserveChecksState,
 	(e: React.ChangeEvent<HTMLInputElement>) => void,
-	React.Dispatch<React.SetStateAction<ReserveChecksState>>,
+	React.Dispatch<React.SetStateAction<ChecksState>>,
 ] {
-	const [selects, setSelects] = useStateWithInputChecks()
+	const [selects, setSelects, setSelectValue] = useStateWithInputChecks()
 	const [reserveSelects, setReserveSelects] = useState<ReserveChecksState>({})
 
 	useEffect(() => {
@@ -60,5 +61,5 @@ export function useStateWithReserveChecks(): [
 		)
 		setReserveSelects(tmpReserveSelects)
 	}, [selects])
-	return [reserveSelects, setSelects, setReserveSelects]
+	return [reserveSelects, setSelects, setSelectValue]
 }

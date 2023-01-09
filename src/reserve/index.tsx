@@ -2,7 +2,7 @@
 
 import { faRefresh } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import {
 	useStateWithErrorMessageField,
 	useStateWithInputChange,
@@ -77,7 +77,7 @@ export function Reserve() {
 		}
 
 		const requireCells = menuItem.miniutes / timeUnitOfCell
-		const menuName = menuState.value
+		const menuName = menuState.text
 
 		console.log('reserveSelects', { reserveSelects })
 		const dataChecks = Object.values(reserveSelects).filter(
@@ -180,7 +180,7 @@ export function Reserve() {
 			setEmailValue('')
 			setNameValue('')
 			setMsgField(
-				'ご入力のメールアドレスに予約招待メールを送信しました。<br />キャンセルをする場合はメール内の"参加しますか? はい - 未定 - いいえ"の"いいえ"を選択して下さい。',
+				'ご入力のメールアドレスに予約招待メールを送信しました。キャンセルをする場合はメール内の"参加しますか? はい - 未定 - いいえ"の"いいえ"を選択して下さい。',
 				false,
 			)
 		} catch (e) {
