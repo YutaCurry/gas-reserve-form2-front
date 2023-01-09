@@ -1,4 +1,4 @@
-import { ChecksState } from '../../util/hooks/types'
+import { ChecksState } from 'react-utils/dist/hooks'
 import { createEmptyIndexKey } from '../funcs'
 import { DateDetail, DateType } from './types'
 

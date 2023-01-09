@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
-import { useStateWithInputChecks } from '../../util/hooks'
-import { ChecksState } from '../../util/hooks/types'
+import { useStateWithInputChecks } from 'react-utils/dist/hooks'
+import { ChecksState } from 'react-utils/dist/hooks'
 import { getReserveMatrix } from '../api'
 import { ReserveMatrixData } from '../components/types'
 import { extractEmptyIndex } from '../funcs'
