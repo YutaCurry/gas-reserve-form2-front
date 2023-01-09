@@ -1,4 +1,4 @@
-import { CheckChangeState } from '../../util/hooks/types'
+import { CheckChangeState } from 'react-utils/dist/hooks'
 
 export interface ReserveCheckChangeState extends CheckChangeState {
 	dateAxisIndex: number
