@@ -15,6 +15,7 @@ import { DateType } from './components/types'
 import { useReserveMatrix, useStateWithReserveChecks } from './hooks'
 import { ReserveCheckChangeState } from './hooks/types'
 import './style.css'
+import { VERSION } from './ver'
 export const RESERVE_MATRIX_DATE_LIMIT = 14
 
 export function Reserve() {
@@ -248,6 +249,7 @@ export function Reserve() {
 					}}
 				>
 					<h1>カット予約フォーム</h1>
+					<span>Ver-{VERSION}</span>
 					<FontAwesomeIcon
 						className={'refresh'}
 						icon={faRefresh}
