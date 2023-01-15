@@ -1,4 +1,5 @@
 import React from 'react'
+import { RESERVE_MATRIX_DATE_LIMIT } from '..'
 import { ReserveMatrixData } from './types'
 
 export interface PageLinkProps {
@@ -7,8 +8,6 @@ export interface PageLinkProps {
 	currPageNum: number
 	setCurrPageNum: React.Dispatch<React.SetStateAction<number>>
 }
-
-const RESERVE_MATRIX_DATE_LIMIT = 14
 
 export function PageLink({
 	currCalendars,

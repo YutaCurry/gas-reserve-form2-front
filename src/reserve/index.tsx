@@ -15,7 +15,7 @@ import { DateType } from './components/types'
 import { useReserveMatrix, useStateWithReserveChecks } from './hooks'
 import { ReserveCheckChangeState } from './hooks/types'
 import './style.css'
-const RESERVE_MATRIX_DATE_LIMIT = 14
+export const RESERVE_MATRIX_DATE_LIMIT = 14
 
 export function Reserve() {
 	const [axisDate, setAxisDate] = useState(new Date())
@@ -149,6 +149,8 @@ export function Reserve() {
 				],
 			},
 		]
+
+		console.log({ reserveTimes })
 
 		const body: CreateCalEventsProps = {
 			email,

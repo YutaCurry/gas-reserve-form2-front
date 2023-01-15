@@ -1,5 +1,5 @@
 export function extractEmptyIndex(key: string) {
-	const keyRegex = /empty-(?<dateAxisIndex>\d+?)-(?<timeAxisIndex>\d+?)/gu
+	const keyRegex = /empty-(?<dateAxisIndex>\d+)-(?<timeAxisIndex>\d+)/gu
 	const match = keyRegex.exec(key)
 	if (!match) {
 		return [-1, -1]

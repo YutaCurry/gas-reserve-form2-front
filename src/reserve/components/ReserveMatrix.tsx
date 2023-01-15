@@ -5,8 +5,6 @@ import { ExistCells } from './ExistCell'
 import { TimeCells } from './TimeCell'
 import { DateType, ReserveMatrixData } from './types'
 
-export const RESERVE_MATRIX_DATE_LIMIT = 30
-
 export interface ReserveMatrixProps {
 	currCalendars: ReserveMatrixData | null
 	pageLinkNum: number
