@@ -8,7 +8,7 @@ export interface PageLinkProps {
 	setCurrPageNum: React.Dispatch<React.SetStateAction<number>>
 }
 
-const RESERVE_MATRIX_DATE_LIMIT = 30
+const RESERVE_MATRIX_DATE_LIMIT = 14
 
 export function PageLink({
 	currCalendars,
